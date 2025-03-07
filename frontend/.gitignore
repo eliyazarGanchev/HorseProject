@@ -31,6 +31,24 @@ speed-measure-plugin*.json
 !.vscode/extensions.json
 .history/*
 
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# Database Files
+*.db
+*.mv.db
+*.trace.db
+
+# Environment Files
+.env
+.env.local
+.env.development
+.env.production
+
+
 # misc
 /.angular/cache
 /.sass-cache
