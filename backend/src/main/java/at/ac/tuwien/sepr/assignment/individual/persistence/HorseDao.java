@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence;
 
 
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
@@ -40,4 +41,13 @@ public interface HorseDao {
    */
   Horse getById(long id) throws NotFoundException;
 
+
+  /**
+   * Creates a new horse in the persistent data store.
+   * The newly created horse will be stored with the provided details.
+   *
+   * @param horse the horse data to create
+   * @return the created horse entity with its assigned ID
+   */
+  Horse create(HorseCreateDto horse);
 }

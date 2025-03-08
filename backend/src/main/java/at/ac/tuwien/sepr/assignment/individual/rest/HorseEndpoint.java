@@ -1,10 +1,8 @@
 package at.ac.tuwien.sepr.assignment.individual.rest;
 
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateRestDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.*;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
+import at.ac.tuwien.sepr.assignment.individual.exception.FailedToCreateException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
@@ -14,12 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -99,6 +92,28 @@ public class HorseEndpoint {
       logClientError(status, "Horse to update not found", e);
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
+  }
+
+  @PostMapping
+  public HorseDetailDto create(@RequestBody HorseCreateDto toCreate) {
+    LOG.info("POST " + BASE_PATH);
+    LOG.debug("request parameters: {}", toCreate);
+    try{
+      return service.create(toCreate);
+    }catch (FailedToCreateException e){
+      HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+      logClientError(status, "Horse creation failed", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    } catch (ValidationException e) {
+      HttpStatus status = HttpStatus.BAD_REQUEST;
+      logClientError(status, "Horse creation failed due to missing or incorrect data", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    } catch (ConflictException e) {
+      HttpStatus status = HttpStatus.CONFLICT;
+      logClientError(status, "Horse creation failed due to existing record conflict", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }
+
   }
 
 

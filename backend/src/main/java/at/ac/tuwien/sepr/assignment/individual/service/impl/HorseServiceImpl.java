@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.*;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -85,6 +82,14 @@ public class HorseServiceImpl implements HorseService {
     return mapper.entityToDetailDto(
         horse,
         ownerMapForSingleId(horse.ownerId()));
+  }
+
+  @Override
+  public HorseDetailDto create(HorseCreateDto horse) throws ValidationException, ConflictException {
+    LOG.trace("create({})", horse);
+    validator.validateForCreate(horse);
+    var createdHorse = dao.create(horse);
+    return mapper.entityToDetailDto(createdHorse,ownerMapForSingleId(createdHorse.ownerId()));
   }
 
 

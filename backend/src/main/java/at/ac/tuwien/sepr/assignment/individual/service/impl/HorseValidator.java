@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
 
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
@@ -47,6 +48,20 @@ public class HorseValidator {
       throw new ValidationException("Validation of horse for update failed", validationErrors);
     }
 
+  }
+
+  public void validateForCreate(HorseCreateDto horse) throws ValidationException, ConflictException {
+    LOG.trace("validateForCreate({})", horse);
+    List<String> validationErrors = new ArrayList<>();
+    if (horse.name() == null) {
+      validationErrors.add("Horse name is empty");
+    }
+    if (horse.name().length() > 4095) {
+      validationErrors.add("Horse name too long: longer than 4095 characters");
+    }
+    if (!validationErrors.isEmpty()) {
+      throw new ValidationException("Validation of horse for update failed", validationErrors);
+    }
   }
 
 }

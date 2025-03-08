@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence.impl;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -42,6 +43,10 @@ public class HorseJdbcDao implements HorseDao {
               WHERE id = :id
           """;
 
+  private static final String SQL_INSERT =
+          "INSERT INTO " + TABLE_NAME + " (name, description, date_of_birth, sex, owner_id) " +
+                  "VALUES (:name, :description, :date_of_birth, :sex, :owner_id)";
+
 
   private final JdbcClient jdbcClient;
 
@@ -77,6 +82,34 @@ public class HorseJdbcDao implements HorseDao {
     }
 
     return horses.getFirst();
+  }
+
+  @Override
+  public Horse create(HorseCreateDto horse) {
+    LOG.trace("create({})", horse);
+    int created = jdbcClient
+            .sql(SQL_INSERT)
+            .param("name", horse.name())
+            .param("description", horse.description())
+            .param("date_of_birth", horse.dateOfBirth())
+            .param("sex", horse.sex())
+            .param("owner_id", horse.ownerId())
+            .update();
+
+    if (created == 0) {
+      throw new FatalException("Failed to create horse");
+    }
+
+    Long createdId = jdbcClient.sql("SELECT LAST_INSERT_ID()").query(Long.class).single();
+
+    return new Horse(
+            createdId,
+            horse.name(),
+            horse.description(),
+            horse.dateOfBirth(),
+            horse.sex(),
+            horse.ownerId()
+    );
   }
 
 
