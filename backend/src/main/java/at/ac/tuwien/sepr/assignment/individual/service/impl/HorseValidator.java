@@ -50,17 +50,42 @@ public class HorseValidator {
 
   }
 
-  public void validateForCreate(HorseCreateDto horse) throws ValidationException, ConflictException {
+  public void validateForCreate(HorseCreateDto horse) throws ValidationException {
     LOG.trace("validateForCreate({})", horse);
     List<String> validationErrors = new ArrayList<>();
-    if (horse.name() == null) {
-      validationErrors.add("Horse name is empty");
+
+    if (horse.name() == null || horse.name().isBlank()) {
+      validationErrors.add("Horse name is required");
     }
-    if (horse.name().length() > 4095) {
-      validationErrors.add("Horse name too long: longer than 4095 characters");
+    if (horse.name() != null && horse.name().length() > 255) {
+      validationErrors.add("Horse name too long: longer than 255 characters");
     }
+
+    if (horse.description() != null) {
+      if (horse.description().isBlank()) {
+        validationErrors.add("Horse description is given but blank");
+      }
+      if (horse.description().length() > 4095) {
+        validationErrors.add("Horse description too long: longer than 4095 characters");
+      }
+    }
+
+    if (horse.dateOfBirth() == null) {
+      validationErrors.add("Horse date of birth is required");
+    }
+
+    if (horse.sex() == null) {
+      validationErrors.add("Horse gender (sex) is required");
+    } else if (!horse.sex().toString().equals("MALE") && !horse.sex().toString().equals("FEMALE")) {
+      validationErrors.add("Invalid horse gender: must be 'MALE' or 'FEMALE'");
+    }
+
+    if (horse.ownerId() != null && horse.ownerId() <= 0) {
+      validationErrors.add("Invalid owner ID: must be a positive number");
+    }
+
     if (!validationErrors.isEmpty()) {
-      throw new ValidationException("Validation of horse for update failed", validationErrors);
+      throw new ValidationException("Validation of horse for creation failed", validationErrors);
     }
   }
 

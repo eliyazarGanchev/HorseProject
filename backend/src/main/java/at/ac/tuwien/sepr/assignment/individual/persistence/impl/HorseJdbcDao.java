@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -87,20 +89,21 @@ public class HorseJdbcDao implements HorseDao {
   @Override
   public Horse create(HorseCreateDto horse) {
     LOG.trace("create({})", horse);
+    KeyHolder keyHolder = new GeneratedKeyHolder();
     int created = jdbcClient
             .sql(SQL_INSERT)
             .param("name", horse.name())
             .param("description", horse.description())
             .param("date_of_birth", horse.dateOfBirth())
-            .param("sex", horse.sex())
+            .param("sex", horse.sex().toString())
             .param("owner_id", horse.ownerId())
-            .update();
+            .update(keyHolder);
 
     if (created == 0) {
       throw new FatalException("Failed to create horse");
     }
 
-    Long createdId = jdbcClient.sql("SELECT LAST_INSERT_ID()").query(Long.class).single();
+    Long createdId = keyHolder.getKey().longValue();
 
     return new Horse(
             createdId,
