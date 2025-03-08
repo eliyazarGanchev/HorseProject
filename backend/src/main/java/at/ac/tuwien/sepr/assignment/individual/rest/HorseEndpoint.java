@@ -94,6 +94,17 @@ public class HorseEndpoint {
     }
   }
 
+
+  /**
+   * Creates a new horse in the system.
+   *
+   * @param toCreate the details of the horse to be created
+   * @return the detailed information of the newly created horse
+   * @throws ValidationException     if validation fails
+   * @throws ConflictException       if a conflict occurs while creating the horse
+   * @throws FailedToCreateException if an unexpected error occurs during creation
+   * @throws ResponseStatusException if the creation process fails due to validation, conflict, or an internal error
+   */
   @PostMapping
   public HorseDetailDto create(@RequestBody HorseCreateDto toCreate) {
     LOG.info("POST " + BASE_PATH);

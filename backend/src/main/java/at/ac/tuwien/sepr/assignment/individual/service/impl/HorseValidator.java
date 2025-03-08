@@ -50,6 +50,12 @@ public class HorseValidator {
 
   }
 
+  /**
+   * Validates a horse before creation, ensuring all fields meet constraints.
+   *
+   * @param horse the {@link HorseCreateDto} to validate
+   * @throws ValidationException if validation fails
+   */
   public void validateForCreate(HorseCreateDto horse) throws ValidationException {
     LOG.trace("validateForCreate({})", horse);
     List<String> validationErrors = new ArrayList<>();
