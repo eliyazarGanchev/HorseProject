@@ -54,6 +54,8 @@ export class HorseCreateEditComponent implements OnInit {
     switch (this.mode) {
       case HorseCreateEditMode.create:
         return 'Create New Horse';
+      case HorseCreateEditMode.edit:
+        return 'Edit Horse';
       default:
         return '?';
     }
@@ -63,6 +65,8 @@ export class HorseCreateEditComponent implements OnInit {
     switch (this.mode) {
       case HorseCreateEditMode.create:
         return 'Create';
+      case HorseCreateEditMode.edit:
+        return 'Save Changes';
       default:
         return '?';
     }
@@ -106,6 +110,8 @@ export class HorseCreateEditComponent implements OnInit {
     switch (this.mode) {
       case HorseCreateEditMode.create:
         return 'created';
+      case HorseCreateEditMode.edit:
+        return 'updated';
       default:
         return '?';
     }
@@ -119,6 +125,27 @@ export class HorseCreateEditComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.mode = data.mode;
     });
+
+    if (this.mode === HorseCreateEditMode.edit) {
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.service.getById(Number(id)).subscribe({
+            next: (data) => {
+              this.horse = data;
+              this.horseBirthDateIsSet = true;
+            },
+            error: (error) => {
+              console.error('Error loading horse data:', error);
+              this.notification.error(this.errorFormatter.format(error), "Failed to load horse data", {
+                enableHtml: true,
+                timeOut: 10000,
+              });
+            }
+          });
+        }
+      });
+    }
   }
 
   public dynamicCssClassesForInput(input: NgModel): any {
@@ -146,6 +173,9 @@ export class HorseCreateEditComponent implements OnInit {
           observable = this.service.create(
             convertFromHorseToCreate(this.horse)
           );
+          break;
+        case HorseCreateEditMode.edit:
+          observable = this.service.update(this.horse);
           break;
         default:
           console.error('Unknown HorseCreateEditMode', this.mode);

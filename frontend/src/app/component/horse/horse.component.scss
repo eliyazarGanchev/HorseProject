@@ -16,6 +16,22 @@
     @include button-variant($light, $light);
 }
 
+/* Default Edit button styling */
+.edit-button {
+  background-color: #f8f9fa;
+  border: 1px solid transparent;
+  color: black;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Change the Edit button to yellow when hovering */
+table tbody tr:hover .edit-button {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: black !important;
+}
+
+
 @each $color in (info, warning, danger) {
     $value: map.get($theme-colors, $color);
     tr:hover .responsive-#{$color}-button {
