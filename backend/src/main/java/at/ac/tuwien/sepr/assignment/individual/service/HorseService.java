@@ -58,4 +58,17 @@ public interface HorseService {
    * @throws ConflictException if the creation data is in conflict with existing records (e.g., owner does not exist)
    */
   HorseDetailDto create(HorseCreateDto horse) throws ValidationException, ConflictException;
+
+  /**
+   * Deletes a horse from the persistent data store.
+   * Once deleted, the horse will no longer appear in the system,
+   * and all its relationships will be removed without affecting other horses.
+   * If the deleted horse was a parent of another horse, the link will be removed.
+   *
+   * @param id the unique identifier of the horse to delete
+   * @return the details of the deleted horse
+   * @throws NotFoundException if the horse with the given ID does not exist in the persistent data store
+   * @throws ValidationException if the horse cannot be deleted due to business rule constraints
+   */
+  HorseDetailDto delete(long id) throws ValidationException, NotFoundException;
 }

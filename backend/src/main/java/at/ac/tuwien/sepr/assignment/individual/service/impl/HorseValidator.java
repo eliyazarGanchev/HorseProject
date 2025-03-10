@@ -95,4 +95,18 @@ public class HorseValidator {
     }
   }
 
+  /**
+   * Validates a horse before deletion, ensuring it exists in the system.
+   *
+   * @param id the ID of the horse to delete
+   * @throws ValidationException if the horse does not exist or cannot be deleted
+   */
+  public void validateForDelete(Long id) throws ValidationException {
+    LOG.trace("validateForDelete({})", id);
+    List<String> validationErrors = new ArrayList<>();
+    if (id == null) {
+      validationErrors.add("Horse ID is required");
+    }
+  }
+
 }

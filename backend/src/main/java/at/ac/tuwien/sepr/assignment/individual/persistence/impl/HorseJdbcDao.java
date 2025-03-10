@@ -11,6 +11,8 @@ import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,10 @@ public class HorseJdbcDao implements HorseDao {
   private static final String SQL_INSERT =
           "INSERT INTO " + TABLE_NAME + " (name, description, date_of_birth, sex, owner_id) " +
                   "VALUES (:name, :description, :date_of_birth, :sex, :owner_id)";
+
+  private static final String SQL_DELETE =
+          "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
+
 
 
   private final JdbcClient jdbcClient;
@@ -103,7 +109,7 @@ public class HorseJdbcDao implements HorseDao {
       throw new FatalException("Failed to create horse");
     }
 
-    Long createdId = keyHolder.getKey().longValue();
+    Long createdId = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
     return new Horse(
             createdId,
@@ -113,6 +119,18 @@ public class HorseJdbcDao implements HorseDao {
             horse.sex(),
             horse.ownerId()
     );
+  }
+
+  @Override
+  public void delete(long id) throws NotFoundException {
+    LOG.trace("delete({})", id);
+    int deleted = jdbcClient.sql(SQL_DELETE)
+            .param("id", id)
+            .update();
+
+    if (deleted == 0) {
+      throw new NotFoundException("Failed to delete horse with ID " + id);
+    }
   }
 
 

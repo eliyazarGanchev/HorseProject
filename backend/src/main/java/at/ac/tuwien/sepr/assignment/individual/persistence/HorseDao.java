@@ -50,4 +50,15 @@ public interface HorseDao {
    * @return the created horse entity with its assigned ID
    */
   Horse create(HorseCreateDto horse);
+
+  /**
+   * Deletes a horse from the persistent data store.
+   * Once deleted, the horse will no longer appear in the system,
+   * and all its relationships will be removed without affecting other horses.
+   * If the deleted horse was a parent of another horse, the link will be removed.
+   *
+   * @param id the unique identifier of the horse to delete
+   * @throws NotFoundException if the horse with the given ID does not exist in the persistent data store
+   */
+  void delete(long id) throws NotFoundException;
 }

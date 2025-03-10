@@ -77,4 +77,15 @@ export class HorseService {
     return this.http.put<Horse>(`${baseUri}/${horse.id}`, horse);
   }
 
+  /**
+   * Deletes a horse from the system.
+   *
+   * @param id The unique identifier of the horse to delete
+   * @return An Observable for the deletion operation
+   */
+  delete(id: number | undefined): Observable<void> {
+    return this.http.delete<void>(`${baseUri}/${id}`);
+  }
+
+
 }

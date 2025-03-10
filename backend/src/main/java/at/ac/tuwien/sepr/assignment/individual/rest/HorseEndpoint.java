@@ -1,10 +1,7 @@
 package at.ac.tuwien.sepr.assignment.individual.rest;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.*;
-import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
-import at.ac.tuwien.sepr.assignment.individual.exception.FailedToCreateException;
-import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
-import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
+import at.ac.tuwien.sepr.assignment.individual.exception.*;
 import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
 import java.lang.invoke.MethodHandles;
 import java.util.stream.Stream;
@@ -125,6 +122,37 @@ public class HorseEndpoint {
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
 
+  }
+
+  /**
+   * Deletes a horse from the system.
+   *
+   * @param id the unique identifier of the horse to delete
+   * @return the detailed information of the deleted horse
+   * @throws NotFoundException       if the horse does not exist
+   * @throws ValidationException     if validation fails before deletion
+   * @throws FailedToDeleteException if an unexpected error occurs during deletion
+   * @throws ResponseStatusException if the deletion process fails due to validation, missing records, or internal errors
+   */
+  @DeleteMapping("/{id}")
+  public HorseDetailDto delete(@PathVariable("id") long id) {
+    LOG.info("DELETE " + BASE_PATH + "/{}", id);
+    LOG.debug("request parameters: {}", id);
+    try {
+      return service.delete(id);
+    } catch (FailedToDeleteException e) {
+      HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+      logClientError(status, "Horse to delete not found", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }catch (ValidationException e){
+      HttpStatus status = HttpStatus.BAD_REQUEST;
+      logClientError(status, "Horse to delete failed", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }catch (NotFoundException e){
+      HttpStatus status = HttpStatus.NOT_FOUND;
+      logClientError(status, "Horse to delete not found", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }
   }
 
 

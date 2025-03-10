@@ -7,6 +7,7 @@ import { HorseService } from 'src/app/service/horse.service';
 import { Horse } from 'src/app/dto/horse';
 import { Owner } from 'src/app/dto/owner';
 import { ConfirmDeleteDialogComponent } from 'src/app/component/confirm-delete-dialog/confirm-delete-dialog.component';
+import {ErrorFormatterService} from "../../service/error-formatter.service";
 
 
 @Component({
@@ -26,9 +27,11 @@ export class HorseComponent implements OnInit {
   bannerError: string | null = null;
   horseForDeletion: Horse | undefined;
 
+
   constructor(
     private service: HorseService,
     private notification: ToastrService,
+    private errorFormatter: ErrorFormatterService,
   ) { }
 
   ngOnInit(): void {
@@ -63,8 +66,18 @@ export class HorseComponent implements OnInit {
     return horse.dateOfBirth.toLocaleDateString();
   }
 
-
   deleteHorse(horse: Horse) {
-    // TODO: delete the horse
+    this.service.delete(horse.id).subscribe({
+      next: () => {
+        this.horseForDeletion = undefined;
+        this.notification.success(`Deleting horse: ${horse.name}`);
+        this.reloadHorses();
+      },error: error => {
+        this.notification.error(this.errorFormatter.format(error), 'Could Not Create Horse', {
+          enableHtml: true,
+          timeOut: 10000,
+        });
+      }
+    })
   }
 }
