@@ -11,10 +11,12 @@ import {ErrorFormatterService} from 'src/app/service/error-formatter.service';
 import {HorseService} from 'src/app/service/horse.service';
 import {OwnerService} from 'src/app/service/owner.service';
 import {formatIsoDate} from "../../../utils/date-helper";
+import {NgIf} from "@angular/common";
 
-export enum HorseCreateEditMode {
+export enum HorseCreateEditDetailMode {
   create,
-  edit
+  edit,
+  detail
 }
 
 @Component({
@@ -23,14 +25,15 @@ export enum HorseCreateEditMode {
   imports: [
     FormsModule,
     AutocompleteComponent,
-    FormsModule
+    FormsModule,
+    NgIf
   ],
   standalone: true,
   styleUrls: ['./horse-create-edit.component.scss']
 })
 export class HorseCreateEditComponent implements OnInit {
 
-  mode: HorseCreateEditMode = HorseCreateEditMode.create;
+  mode: HorseCreateEditDetailMode = HorseCreateEditDetailMode.create;
   horse: Horse = {
     name: '',
     description: '',
@@ -52,10 +55,12 @@ export class HorseCreateEditComponent implements OnInit {
 
   public get heading(): string {
     switch (this.mode) {
-      case HorseCreateEditMode.create:
+      case HorseCreateEditDetailMode.create:
         return 'Create New Horse';
-      case HorseCreateEditMode.edit:
+      case HorseCreateEditDetailMode.edit:
         return 'Edit Horse';
+      case HorseCreateEditDetailMode.detail:
+        return 'View Horse';
       default:
         return '?';
     }
@@ -63,9 +68,9 @@ export class HorseCreateEditComponent implements OnInit {
 
   public get submitButtonText(): string {
     switch (this.mode) {
-      case HorseCreateEditMode.create:
+      case HorseCreateEditDetailMode.create:
         return 'Create';
-      case HorseCreateEditMode.edit:
+      case HorseCreateEditDetailMode.edit:
         return 'Save Changes';
       default:
         return '?';
@@ -90,7 +95,11 @@ export class HorseCreateEditComponent implements OnInit {
   }
 
   get modeIsCreate(): boolean {
-    return this.mode === HorseCreateEditMode.create;
+    return this.mode === HorseCreateEditDetailMode.create;
+  }
+
+  get modeIsDetail(): boolean {
+    return this.mode === HorseCreateEditDetailMode.detail;
   }
 
 
@@ -108,9 +117,9 @@ export class HorseCreateEditComponent implements OnInit {
 
   private get modeActionFinished(): string {
     switch (this.mode) {
-      case HorseCreateEditMode.create:
+      case HorseCreateEditDetailMode.create:
         return 'created';
-      case HorseCreateEditMode.edit:
+      case HorseCreateEditDetailMode.edit:
         return 'updated';
       default:
         return '?';
@@ -126,7 +135,7 @@ export class HorseCreateEditComponent implements OnInit {
       this.mode = data.mode;
     });
 
-    if (this.mode === HorseCreateEditMode.edit) {
+    if (this.mode != HorseCreateEditDetailMode.create) {
       this.route.paramMap.subscribe(params => {
         const id = params.get('id');
         if (id) {
@@ -169,12 +178,12 @@ export class HorseCreateEditComponent implements OnInit {
       }
       let observable: Observable<Horse>;
       switch (this.mode) {
-        case HorseCreateEditMode.create:
+        case HorseCreateEditDetailMode.create:
           observable = this.service.create(
             convertFromHorseToCreate(this.horse)
           );
           break;
-        case HorseCreateEditMode.edit:
+        case HorseCreateEditDetailMode.edit:
           observable = this.service.update(this.horse);
           break;
         default:
