@@ -134,7 +134,7 @@ public class HorseEndpoint {
    * @throws FailedToDeleteException if an unexpected error occurs during deletion
    * @throws ResponseStatusException if the deletion process fails due to validation, missing records, or internal errors
    */
-  @DeleteMapping("/{id}")
+  @DeleteMapping(path = "/{id}")
   public HorseDetailDto delete(@PathVariable("id") long id) {
     LOG.info("DELETE " + BASE_PATH + "/{}", id);
     LOG.debug("request parameters: {}", id);

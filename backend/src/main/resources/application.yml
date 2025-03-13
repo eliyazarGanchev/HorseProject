@@ -1,6 +1,7 @@
 logging:
   level:
     root: INFO
+    at.ac.tuwien.sepr.assignment.individual: DEBUG
   file:
     name: ./log/wendys-friends.log
   pattern:

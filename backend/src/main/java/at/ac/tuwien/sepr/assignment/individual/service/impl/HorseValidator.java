@@ -3,14 +3,21 @@ package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
+import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
+import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+
+import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
+import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import javax.swing.text.html.parser.Entity;
 
 /**
  * Validator for horse-related operations, ensuring that all horse data meets the required constraints.
@@ -18,9 +25,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class HorseValidator {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final HorseDao dao;
 
+    public HorseValidator(HorseDao dao) {
+        this.dao = dao;
+    }
 
-  /**
+    /**
    * Validates a horse before updating, ensuring all fields meet constraints and checking for conflicts.
    *
    * @param horse the {@link HorseUpdateDto} to validate
@@ -56,7 +67,7 @@ public class HorseValidator {
    * @param horse the {@link HorseCreateDto} to validate
    * @throws ValidationException if validation fails
    */
-  public void validateForCreate(HorseCreateDto horse) throws ValidationException {
+  public void validateForCreate(HorseCreateDto horse) throws ValidationException, ConflictException {
     LOG.trace("validateForCreate({})", horse);
     List<String> validationErrors = new ArrayList<>();
 
@@ -80,10 +91,39 @@ public class HorseValidator {
       validationErrors.add("Horse date of birth is required");
     }
 
+
     if (horse.sex() == null) {
       validationErrors.add("Horse gender (sex) is required");
     } else if (!horse.sex().toString().equals("MALE") && !horse.sex().toString().equals("FEMALE")) {
       validationErrors.add("Invalid horse gender: must be 'MALE' or 'FEMALE'");
+    }
+
+    if(horse.motherId() != null) {
+        try {
+            Horse mother = dao.getById(horse.motherId());
+            if(!mother.dateOfBirth().isBefore(horse.dateOfBirth())) {
+              validationErrors.add("Mother's date of birth should be after horse's date of birth");
+            }
+            if(mother.sex().equals(Sex.MALE)){
+              validationErrors.add("Mother should be female");
+            }
+        } catch (NotFoundException e) {
+            validationErrors.add("Mother not found");
+        }
+    }
+
+    if(horse.fatherId() != null) {
+      try {
+        Horse father = dao.getById(horse.fatherId());
+        if(!father.dateOfBirth().isBefore(horse.dateOfBirth())) {
+          validationErrors.add("Father's date of birth should be after horse's date of birth");
+        }
+        if(father.sex().equals(Sex.FEMALE)){
+          validationErrors.add("Father should be male");
+        }
+      } catch (NotFoundException e) {
+        validationErrors.add("Father not found");
+      }
     }
 
     if (horse.ownerId() != null && horse.ownerId() <= 0) {
