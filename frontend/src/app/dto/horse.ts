@@ -8,6 +8,8 @@ export interface Horse {
   dateOfBirth: Date;
   sex: Sex;
   owner?: Owner;
+  mother?: Horse;
+  father?: Horse;
 }
 
 export interface HorseSearch {
@@ -21,6 +23,8 @@ export interface HorseCreate {
   dateOfBirth: Date;
   sex: Sex;
   ownerId?: number;
+  mother?: Horse;
+  father?: Horse;
 }
 
 export function convertFromHorseToCreate(horse: Horse): HorseCreate {
@@ -30,6 +34,8 @@ export function convertFromHorseToCreate(horse: Horse): HorseCreate {
     dateOfBirth: horse.dateOfBirth,
     sex: horse.sex,
     ownerId: horse.owner?.id,
+    mother: horse.mother,
+    father: horse.father,
   };
 }
 
