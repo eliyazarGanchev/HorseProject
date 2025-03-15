@@ -70,10 +70,10 @@ export class HorseComponent implements OnInit {
     this.service.delete(horse.id).subscribe({
       next: () => {
         this.horseForDeletion = undefined;
-        this.notification.success(`Deleting horse: ${horse.name}`);
+        this.notification.success(`Deleting horse: ${horse.name}.`);
         this.reloadHorses();
       },error: error => {
-        this.notification.error(this.errorFormatter.format(error), 'Could Not Create Horse', {
+        this.notification.error(this.errorFormatter.format(error), 'Could Not Delete Horse', {
           enableHtml: true,
           timeOut: 10000,
         });

@@ -144,6 +144,33 @@
     </div>
   </div>
 
+  <div class="mt-4 d-flex flex-row">
+    <a
+      *ngIf="modeIsDetail"
+      class="btn btn-warning me-2"
+      [routerLink]="['/horses/edit', horse.id]"
+      aria-label="Edit horse">
+      <i class="bi bi-pencil"></i> Edit
+    </a>
+
+    <button
+      *ngIf="modeIsDetail"
+      class="btn btn-danger"
+      (click)="horseForDeletion = horse"
+      data-bs-toggle="modal"
+      data-bs-target="#delete-dialog"
+      aria-label="Delete horse">
+      <i class="bi bi-trash"></i> Delete
+    </button>
+  </div>
+
+  <app-confirm-delete-dialog
+    id="delete-dialog"
+    [hidden]="!horseForDeletion"
+    [deleteWhat]="horseForDeletion?.name"
+    (confirm)="deleteHorse(horseForDeletion)">
+  </app-confirm-delete-dialog>
+
 
   <div class="mt-4 d-flex flex-row">
     <button

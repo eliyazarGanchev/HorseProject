@@ -8,12 +8,19 @@
 - **Total Time Spent:** X hours
 
 ## **Time Log**
-| Date       | Duration (h) | Edited Story |
-|------------|--------------|--------------|
-| 07.03.2025 | 3 hours      | US 1         |
-| 08.03.2025 | 3 hours      | US 1         |
-| 09.03.2025 | 4,5 hours    | US 2         |
-| 10.03.2025 | 2,5 hours    | US 3         |
-| 12.03.2025 | 3 hours      | US 4         |
+| Date    | Duration (h) | Edited Story |
+|---------|-------|-|
+| 07.03.2025 | 3 hours | US 1 |
+| 08.03.2025 | 3 hours | US 1 |
+| 09.03.2025 | 4.5 hours | US 2 |
+| 10.03.2025 | 2.5 hours | US 3 |
+| 12.03.2025 | 3 hours | US 4 |
+| 13.03.2025 | 1,5 hours | US 5 |
+| 14.03.2025 | 1 hours | US 5 |
+| | | |
+| | | |
+| | | |
+| | | |
+| | | |       
 
 

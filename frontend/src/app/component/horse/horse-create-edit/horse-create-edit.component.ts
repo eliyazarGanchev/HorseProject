@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule, NgForm, NgModel} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {Observable, of} from 'rxjs';
 import {AutocompleteComponent} from 'src/app/component/autocomplete/autocomplete.component';
@@ -12,6 +12,7 @@ import {HorseService} from 'src/app/service/horse.service';
 import {OwnerService} from 'src/app/service/owner.service';
 import {formatIsoDate} from "../../../utils/date-helper";
 import {NgIf} from "@angular/common";
+import {ConfirmDeleteDialogComponent} from "../../confirm-delete-dialog/confirm-delete-dialog.component";
 
 export enum HorseCreateEditDetailMode {
   create,
@@ -26,12 +27,15 @@ export enum HorseCreateEditDetailMode {
     FormsModule,
     AutocompleteComponent,
     FormsModule,
-    NgIf
+    NgIf,
+    RouterLink,
+    ConfirmDeleteDialogComponent
   ],
   standalone: true,
   styleUrls: ['./horse-create-edit.component.scss']
 })
 export class HorseCreateEditComponent implements OnInit {
+  horseForDeletion: Horse | undefined;
 
   mode: HorseCreateEditDetailMode = HorseCreateEditDetailMode.create;
   horse: Horse = {
@@ -205,4 +209,20 @@ export class HorseCreateEditComponent implements OnInit {
       });
     }
   }
-}
+
+  deleteHorse(horse: Horse) {
+    this.service.delete(horse.id).subscribe({
+      next: () => {
+        this.horseForDeletion = undefined;
+        this.notification.success(`Deleting horse ${horse.name}.`);
+        this.router.navigate(['/horses']);
+      },
+      error: error => {
+        this.notification.error(this.errorFormatter.format(error), 'Could Not Delete Horse', {
+          enableHtml: true,
+          timeOut: 10000,
+        });
+      }
+    });
+  }
+  }

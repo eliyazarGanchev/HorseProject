@@ -5,10 +5,10 @@ import {HorseComponent} from './component/horse/horse.component';
 
 export const routes: Routes = [
   {path: 'horses', children: [
-    {path: '', component: HorseComponent},
-    {path: 'create', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.create}},
+      {path: '', component: HorseComponent},
+      {path: 'create', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.create}},
       {path: 'edit/:id', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.edit}},
       {path: 'detail/:id', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.detail}},
-  ]},
+    ]},
   {path: '**', redirectTo: 'horses'},
 ];
