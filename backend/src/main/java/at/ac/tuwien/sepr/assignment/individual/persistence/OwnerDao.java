@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
@@ -42,4 +43,5 @@ public interface OwnerDao {
    */
   Collection<Owner> search(OwnerSearchDto searchParameters);
 
+  Owner create(OwnerCreateDto owner);
 }

@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
+import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import at.ac.tuwien.sepr.assignment.individual.mapper.OwnerMapper;
 import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
 import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Validator;
 
 /**
  * Service implementation for managing owner-related operations.
@@ -25,12 +28,14 @@ public class OwnerServiceImpl implements OwnerService {
 
   private final OwnerDao dao;
   private final OwnerMapper mapper;
+  private final OwnerValidator validator;
 
   public OwnerServiceImpl(
-      OwnerDao dao,
-      OwnerMapper mapper) {
+          OwnerDao dao,
+          OwnerMapper mapper, OwnerValidator validator) {
     this.dao = dao;
     this.mapper = mapper;
+    this.validator = validator;
   }
 
   /**
@@ -79,6 +84,14 @@ public class OwnerServiceImpl implements OwnerService {
     LOG.trace("search({})", searchParameters);
     return dao.search(searchParameters).stream()
         .map(mapper::entityToDto);
+  }
+
+  @Override
+  public OwnerDto create(OwnerCreateDto owner) throws ValidationException {
+    LOG.trace("create({})", owner);
+    validator.validateForCreate(owner);
+    var createdOwner = dao.create(owner);
+    return mapper.entityToDto(createdOwner);
   }
 
 }

@@ -121,7 +121,6 @@ public class HorseEndpoint {
       logClientError(status, "Horse creation failed due to existing record conflict", e);
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
-
   }
 
   /**

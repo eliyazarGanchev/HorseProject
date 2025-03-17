@@ -1,15 +1,19 @@
 package at.ac.tuwien.sepr.assignment.individual.rest;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
+import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
+import at.ac.tuwien.sepr.assignment.individual.exception.FailedToCreateException;
+import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
 import java.lang.invoke.MethodHandles;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing owner-related operations.
@@ -37,6 +41,26 @@ public class OwnerEndpoint {
   public Stream<OwnerDto> search(OwnerSearchDto searchParameters) {
     LOG.info("GET " + BASE_PATH + " query parameters: {}", searchParameters);
     return service.search(searchParameters);
+  }
+
+  @PostMapping
+  public OwnerDto create(@RequestBody OwnerCreateDto toCreate) {
+    LOG.info("POST " + BASE_PATH + " query parameters: {}", toCreate);
+    try{
+      return service.create(toCreate);
+    }catch (FailedToCreateException e){
+      HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+      logClientError(status, "Owner creation failed", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    } catch (ValidationException e) {
+      HttpStatus status = HttpStatus.BAD_REQUEST;
+      logClientError(status, "Owner to delete failed", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }
+  }
+
+  private void logClientError(HttpStatus status, String message, Exception e) {
+    LOG.warn("{} {}: {}: {}", status.value(), message, e.getClass().getSimpleName(), e.getMessage());
   }
 
 }

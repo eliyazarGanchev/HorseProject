@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence.impl;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -8,14 +9,14 @@ import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -36,6 +37,10 @@ public class OwnerJdbcDao implements OwnerDao {
   private static final String SQL_SELECT_SEARCH =
       "SELECT * FROM " + TABLE_NAME
           + " WHERE UPPER(first_name || ' ' || last_name) LIKE UPPER('%%' || COALESCE(:name, '') || '%%')";
+
+  private static final String SQL_INSERT =
+          "INSERT INTO " + TABLE_NAME + " (first_name, last_name, description) " +
+                  "VALUES (:first_name, :last_name, :description)";
 
   private static final String SQL_SELECT_SEARCH_LIMIT_CLAUSE = " LIMIT :limit";
 
@@ -97,11 +102,37 @@ public class OwnerJdbcDao implements OwnerDao {
         .list();
   }
 
+  @Override
+  public Owner create(OwnerCreateDto owner) {
+    LOG.trace("create({})", owner);
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+
+    int created = jdbcClient
+            .sql(SQL_INSERT)
+            .param("first_name", owner.firstName())
+            .param("last_name", owner.lastName())
+            .param("description", owner.description())
+            .update(keyHolder);
+
+    if (created == 0) {
+      throw new FatalException("Failed to create owner");
+    }
+
+    Long createdId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+    return new Owner(
+            createdId,
+            owner.firstName(),
+            owner.lastName(),
+            owner.description()
+    );
+  }
+
   private Owner mapRow(ResultSet resultSet, int i) throws SQLException {
     return new Owner(
         resultSet.getLong("id"),
         resultSet.getString("first_name"),
         resultSet.getString("last_name"),
-        resultSet.getString("email"));
+        resultSet.getString("description"));
   }
 }
