@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {map, Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
@@ -87,5 +87,36 @@ export class HorseService {
     return this.http.delete<void>(`${baseUri}/${id}`);
   }
 
+  /**
+   * Searches for horses based on the given criteria.
+   *
+   * Each field in the parameters is optional. If a field is not provided or is null,
+   * it will not be used as a filter. The search criteria are sent as query parameters to the backend.
+   *
+   * @param params An object containing the search parameters:
+   *               name: Partial or full name of the horse.
+   *               description: Partial or full description of the horse.
+   *               date_of_birth: Date string to filter horses born on this date.
+   *               sex: The gender of the horse ("MALE" or "FEMALE").
+   *               ownerName: Partial or full name of the owner.
+   * @return An Observable emitting an array of horses that match the search criteria.
+   */
+  search(params: {
+    name?: string | null,
+    description?: string | null,
+    date_of_birth?: string | null,
+    sex?: string | null,
+    ownerName?: string | null
+  }): Observable<Horse[]> {
+    let query = new HttpParams();
+    for (const key of Object.keys(params)) {
+      const value = params[key as keyof typeof params];
+      if (value) {
+        query = query.set(key, value);
+      }
+    }
+    return this.http.get<Horse[]>(baseUri, { params: query })
+      .pipe(map(horses => horses.map(this.fixHorseDate)));
+  }
 
 }

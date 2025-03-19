@@ -1,10 +1,7 @@
 package at.ac.tuwien.sepr.assignment.individual.service;
 
 
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.*;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
@@ -71,4 +68,23 @@ public interface HorseService {
    * @throws ValidationException if the horse cannot be deleted due to business rule constraints
    */
   HorseDetailDto delete(long id) throws ValidationException, NotFoundException;
+
+  /**
+   * Searches for horses based on the provided search criteria.
+   * <p>
+   * The search criteria are specified in a {@link HorseSearchDto}. Each field in the DTO is optional;
+   * if a field is null, that criterion will not be applied. The supported criteria are:
+   * <ul>
+   *   <li><b>Name:</b> A case-insensitive partial match against the horse's name.</li>
+   *   <li><b>Description:</b> A case-insensitive partial match against the horse's description.</li>
+   *   <li><b>Date of Birth:</b> Returns horses that have the specified date of birth.</li>
+   *   <li><b>Sex:</b> An exact match against the horse's sex.</li>
+   *   <li><b>Owner Name:</b> A case-insensitive partial match against the owner's full name (concatenation of first and last name).</li>
+   * </ul>
+   * If no criteria are provided, all horses will be returned.
+   *
+   * @param searchParameters the DTO containing the search filters
+   * @return a stream of {@link HorseListDto} objects representing the horses that match the specified criteria
+   */
+  Stream<HorseListDto> search(HorseSearchDto searchParameters);
 }

@@ -20,7 +20,9 @@
       type="text"
       id="searchHorseName"
       name="searchHorseName"
-      class="form-control">
+      class="form-control"
+      [(ngModel)]="searchParams.name"
+      (ngModelChange)="onSearch()">
   </div>
 
   <div class="flex-grow-1 ms-1">
@@ -29,7 +31,9 @@
       type="text"
       id="searchHorseDescription"
       name="searchHorseDescription"
-      class="form-control">
+      class="form-control"
+      [(ngModel)]="searchParams.description"
+      (ngModelChange)="onSearch()">
   </div>
 
   <div class="ms-1">
@@ -40,7 +44,9 @@
       name="searchHorseDateOfBirth"
       pattern="\d{4}-\d{2}-\d{2}"
       placeholder="yyyy-mm-dd"
-      class="form-control">
+      class="form-control"
+      [(ngModel)]="searchParams.date_of_birth"
+      (ngModelChange)="onSearch()">
   </div>
 
   <div class="ms-1">
@@ -48,7 +54,9 @@
     <select
       id="searchHorseSex"
       name="searchHorseSex"
-      class="form-select">
+      class="form-select"
+      [(ngModel)]="searchParams.sex"
+      (ngModelChange)="onSearch()">
       <option></option>
       <option value="FEMALE">Female</option>
       <option value="MALE">Male</option>
@@ -61,7 +69,9 @@
       id="searchHorseOwner"
       name="searchHorseOwner"
       textInputClass="form-control"
-      valueNeedsToMatchSuggestion="false">
+      valueNeedsToMatchSuggestion="false"
+      [(ngModel)]="searchParams.ownerName"
+      (ngModelChange)="onSearch()">
     </app-autocomplete>
   </div>
 </form>

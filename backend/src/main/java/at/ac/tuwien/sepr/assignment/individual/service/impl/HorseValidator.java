@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.parser.Entity;
 
 /**
  * Validator for horse-related operations, ensuring that all horse data meets the required constraints.

@@ -2,9 +2,12 @@ package at.ac.tuwien.sepr.assignment.individual.persistence;
 
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
+
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,4 +64,25 @@ public interface HorseDao {
    * @throws NotFoundException if the horse with the given ID does not exist in the persistent data store
    */
   void delete(long id) throws NotFoundException;
+
+  /**
+   * Searches for horses in the persistent data store based on the provided criteria.
+   * <p>
+   * The search criteria are encapsulated in a {@link HorseSearchDto} object, where each field is optional.
+   * If a field is null, that criterion is not applied, and the search will not be restricted by it.
+   * The supported search criteria are:
+   * <ul>
+   *   <li><b>Name:</b> A case-insensitive partial match against the horse's name.</li>
+   *   <li><b>Description:</b> A case-insensitive partial match against the horse's description.</li>
+   *   <li><b>Date of Birth:</b> Returns horses with a date of birth equal to the given date.</li>
+   *   <li><b>Sex:</b> An exact match for the horse's sex.</li>
+   *   <li><b>Owner Name:</b> A case-insensitive partial match against the owner's full name
+   *       (combination of first and last name).</li>
+   * </ul>
+   * If no criteria are provided, the method returns all horses.
+   *
+   * @param searchParameters the DTO containing the search filters
+   * @return a list of horses that match the provided search criteria
+   */
+  List<Horse> search(HorseSearchDto searchParameters);
 }

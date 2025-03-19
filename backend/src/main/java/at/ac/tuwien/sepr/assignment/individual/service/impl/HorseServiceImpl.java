@@ -101,6 +101,13 @@ public class HorseServiceImpl implements HorseService {
     return mapper.entityToDetailDto(horseToDeletion,ownerMapForSingleId(horseToDeletion.ownerId()));
   }
 
+  @Override
+  public Stream<HorseListDto> search(HorseSearchDto searchParameters) {
+    LOG.trace("search({})", searchParameters);
+    return dao.search(searchParameters).stream()
+            .map(horse -> mapper.entityToListDto(horse, ownerMapForSingleId(horse.ownerId())));
+  }
+
 
   private Map<Long, OwnerDto> ownerMapForSingleId(Long ownerId) {
     try {

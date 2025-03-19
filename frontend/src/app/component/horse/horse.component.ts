@@ -34,6 +34,14 @@ export class HorseComponent implements OnInit {
     private errorFormatter: ErrorFormatterService,
   ) { }
 
+  searchParams = {
+    name: '',
+    description: '',
+    date_of_birth: '',
+    sex: '',
+    ownerName: ''
+  };
+
   ngOnInit(): void {
     this.reloadHorses();
   }
@@ -54,6 +62,31 @@ export class HorseComponent implements OnInit {
           this.notification.error(errorMessage, 'Could Not Fetch Horses');
         }
       });
+  }
+
+  onSearch(): void {
+    const query = {
+      name: this.searchParams.name?.trim() || null,
+      description: this.searchParams.description?.trim() || null,
+      date_of_birth: this.searchParams.date_of_birth || null,
+      sex: this.searchParams.sex || null,
+      ownerName: this.searchParams.ownerName?.trim() || null
+    };
+
+    this.service.search(query).subscribe({
+      next: data => {
+        this.horses = data;
+        this.bannerError = null;
+      },
+      error: error => {
+        console.error('Error searching horses', error);
+        this.bannerError = 'Could not fetch horses: ' + error.message;
+        const errorMessage = error.status === 0
+          ? 'Is the backend up?'
+          : error.message.message;
+        this.notification.error(errorMessage, 'Could Not Fetch Horses');
+      }
+    });
   }
 
   ownerName(owner: Owner | null): string {

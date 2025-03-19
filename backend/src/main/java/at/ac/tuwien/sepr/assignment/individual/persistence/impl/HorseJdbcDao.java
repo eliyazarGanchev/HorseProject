@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence.impl;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -57,7 +58,15 @@ public class HorseJdbcDao implements HorseDao {
   private static final String SQL_DELETE =
           "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
 
-
+  private static final String SQL_SEARCH =
+          "SELECT h.* FROM horse h " +
+                  "LEFT JOIN owner o ON h.owner_id = o.id " +
+                  "WHERE (UPPER(h.name) LIKE CONCAT('%', UPPER(COALESCE(:name, '')), '%')) " +
+                  "AND (UPPER(h.description) LIKE CONCAT('%', UPPER(COALESCE(:description, '')), '%')) " +
+                  "AND (:date_of_birth IS NULL OR h.date_of_birth = :date_of_birth) " +
+                  "AND (:sex IS NULL OR h.sex = :sex) " +
+                  "AND (UPPER(CONCAT(COALESCE(o.first_name, ''), ' ', COALESCE(o.last_name, ''))) " +
+                  "LIKE CONCAT('%', UPPER(COALESCE(:ownerName, '')), '%'))";
 
   private final JdbcClient jdbcClient;
 
@@ -138,6 +147,20 @@ public class HorseJdbcDao implements HorseDao {
     if (deleted == 0) {
       throw new NotFoundException("Failed to delete horse with ID " + id);
     }
+  }
+
+  @Override
+  public List<Horse> search(HorseSearchDto searchParameters) {
+    LOG.trace("search({})", searchParameters);
+
+    return jdbcClient.sql(SQL_SEARCH)
+            .param("name", searchParameters.name())
+            .param("description", searchParameters.description())
+            .param("date_of_birth", searchParameters.date_of_birth())
+            .param("sex", searchParameters.sex() != null ? searchParameters.sex().toString() : null)
+            .param("ownerName", searchParameters.ownerName())
+            .query(this::mapRow)
+            .list();
   }
 
 
