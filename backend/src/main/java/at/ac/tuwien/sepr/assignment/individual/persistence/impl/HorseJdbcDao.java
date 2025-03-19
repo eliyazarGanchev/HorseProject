@@ -61,12 +61,11 @@ public class HorseJdbcDao implements HorseDao {
   private static final String SQL_SEARCH =
           "SELECT h.* FROM horse h " +
                   "LEFT JOIN owner o ON h.owner_id = o.id " +
-                  "WHERE (UPPER(h.name) LIKE CONCAT('%', UPPER(COALESCE(:name, '')), '%')) " +
-                  "AND (UPPER(h.description) LIKE CONCAT('%', UPPER(COALESCE(:description, '')), '%')) " +
+                  "WHERE (COALESCE(:name, '') = '' OR UPPER(h.name) LIKE '%' || UPPER(:name) || '%') " +
+                  "AND (COALESCE(:description, '') = '' OR UPPER(h.description) LIKE '%' || UPPER(:description) || '%') " +
                   "AND (:date_of_birth IS NULL OR h.date_of_birth = :date_of_birth) " +
                   "AND (:sex IS NULL OR h.sex = :sex) " +
-                  "AND (UPPER(CONCAT(COALESCE(o.first_name, ''), ' ', COALESCE(o.last_name, ''))) " +
-                  "LIKE CONCAT('%', UPPER(COALESCE(:ownerName, '')), '%'))";
+                  "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE '%' || UPPER(:ownerName) || '%')";
 
   private final JdbcClient jdbcClient;
 
