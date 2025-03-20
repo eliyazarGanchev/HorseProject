@@ -9,27 +9,23 @@ import { OwnerService } from 'src/app/service/owner.service';
 import {NgIf} from "@angular/common";
 
 
-export enum OwnerCreateEditDetailMode {
+export enum OwnerCreateMode {
   create,
-  edit,
-  detail
 }
 
 @Component({
-  selector: 'app-owner-create-detail',
-  templateUrl: './owner-create-detail.component.html',
+  selector: 'app-owner-create',
+  templateUrl: './owner-create.component.html',
   imports: [
     FormsModule,
-    RouterLink,
-    NgIf,
   ],
   standalone: true,
-  styleUrls: ['./owner-create-detail.component.scss']
+  styleUrls: ['./owner-create.component.scss']
 })
-export class OwnerCreateEditComponent implements OnInit {
+export class OwnerCreateComponent implements OnInit {
   ownerForDeletion: Owner | undefined;
 
-  mode: OwnerCreateEditDetailMode = OwnerCreateEditDetailMode.create;
+  mode: OwnerCreateMode = OwnerCreateMode.create;
   owner: Owner = {
     firstName: '',
     lastName: '',
@@ -46,12 +42,8 @@ export class OwnerCreateEditComponent implements OnInit {
 
   public get heading(): string {
     switch (this.mode) {
-      case OwnerCreateEditDetailMode.create:
+      case OwnerCreateMode.create:
         return 'Create New Owner';
-      case OwnerCreateEditDetailMode.edit:
-        return 'Edit Owner';
-      case OwnerCreateEditDetailMode.detail:
-        return 'View Owner';
       default:
         return '?';
     }
@@ -59,29 +51,20 @@ export class OwnerCreateEditComponent implements OnInit {
 
   public get submitButtonText(): string {
     switch (this.mode) {
-      case OwnerCreateEditDetailMode.create:
+      case OwnerCreateMode.create:
         return 'Create';
-      case OwnerCreateEditDetailMode.edit:
-        return 'Save Changes';
       default:
         return '?';
     }
   }
 
-  get modeIsCreate(): boolean {
-    return this.mode === OwnerCreateEditDetailMode.create;
-  }
-
-  get modeIsDetail(): boolean {
-    return this.mode === OwnerCreateEditDetailMode.detail;
-  }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.mode = data.mode;
     });
 
-    if (this.mode !== OwnerCreateEditDetailMode.create) {
+    if (this.mode !== OwnerCreateMode.create) {
       this.route.paramMap.subscribe(params => {
         const id = params.get('id');
         if (id) {
@@ -112,7 +95,7 @@ export class OwnerCreateEditComponent implements OnInit {
     if (form.valid) {
       let observable: Observable<Owner>;
       switch (this.mode) {
-        case OwnerCreateEditDetailMode.create:
+        case OwnerCreateMode.create:
           observable = this.service.create(this.owner);
           break;
         default:
@@ -121,7 +104,7 @@ export class OwnerCreateEditComponent implements OnInit {
       }
       observable.subscribe({
         next: data => {
-          this.notification.success(`Owner ${this.owner.firstName} ${this.owner.lastName} successfully ${this.mode === OwnerCreateEditDetailMode.create ? 'created' : 'updated'}.`);
+          this.notification.success(`Owner ${this.owner.firstName} ${this.owner.lastName} successfully ${this.mode === OwnerCreateMode.create ? 'created' : 'updated'}.`);
           this.router.navigate(['/owners']);
         },
         error: error => {

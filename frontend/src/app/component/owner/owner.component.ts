@@ -18,7 +18,7 @@ import { Owner } from 'src/app/dto/owner';
 export class OwnerComponent implements OnInit {
   owners: Owner[] = [];
   bannerError: string | null = null;
-  ownerForDeletion: Owner | undefined;
+
 
   constructor(
     private service: OwnerService,

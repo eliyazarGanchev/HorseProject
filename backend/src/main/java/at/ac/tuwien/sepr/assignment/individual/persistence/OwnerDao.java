@@ -43,5 +43,14 @@ public interface OwnerDao {
    */
   Collection<Owner> search(OwnerSearchDto searchParameters);
 
+  /**
+   * Creates a new owner in the persistent data store.
+   * <p>
+   * The provided owner details are persisted and the newly created owner entity,
+   * including its generated ID and other properties, is returned.
+   *
+   * @param owner the DTO containing the details for the owner to be created
+   * @return the created owner entity with its assigned ID and details
+   */
   Owner create(OwnerCreateDto owner);
 }

@@ -46,6 +46,15 @@ public interface OwnerService {
    */
   Stream<OwnerDto> search(OwnerSearchDto searchParameters);
 
-
-    OwnerDto create(OwnerCreateDto toCreate) throws ValidationException;
+  /**
+   * Creates a new owner in the persistent data store.
+   * <p>
+   * The newly created owner will be stored with the provided details.
+   * The owner is validated before being persisted.
+   *
+   * @param toCreate the DTO containing the details for the owner to be created
+   * @return the created owner, including its assigned ID and other details
+   * @throws ValidationException if the provided owner data is invalid (e.g., missing required fields)
+   */
+  OwnerDto create(OwnerCreateDto toCreate) throws ValidationException;
 }

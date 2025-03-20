@@ -46,7 +46,11 @@ export class OwnerService {
     return this.http.get<Owner>(`${baseUri}/${id}`);
   }
 
-
+  /**
+   * Get all owners stored in the system.
+   *
+   * @return an Observable containing the list of all found owners
+   */
   getAll(): Observable<Owner[]> {
     return this.http.get<Owner[]>(baseUri)
   }

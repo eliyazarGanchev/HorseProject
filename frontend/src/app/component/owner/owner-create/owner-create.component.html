@@ -17,7 +17,6 @@
             class="form-control"
             [class]="dynamicCssClassesForInput(ownerFirstNameModel)"
             [(ngModel)]="owner.firstName"
-            [disabled]="modeIsDetail"
             #ownerFirstNameModel="ngModel"
             required>
           <div class="invalid-feedback">
@@ -41,7 +40,6 @@
             class="form-control"
             [class]="dynamicCssClassesForInput(ownerLastNameModel)"
             [(ngModel)]="owner.lastName"
-            [disabled]="modeIsDetail"
             #ownerLastNameModel="ngModel"
             required>
           <div class="invalid-feedback">
@@ -61,30 +59,9 @@
           class="form-control"
           id="ownerDescription"
           name="ownerDescription"
-          [(ngModel)]="owner.description"
-          [disabled]="modeIsDetail">
+          [(ngModel)]="owner.description">
         </textarea>
     </div>
-  </div>
-
-  <div class="mt-4 d-flex flex-row">
-    <a
-      *ngIf="modeIsDetail"
-      class="btn btn-warning me-2"
-      [routerLink]="['/owners/edit', owner.id]"
-      aria-label="Edit owner">
-      <i class="bi bi-pencil"></i> Edit
-    </a>
-
-    <button
-      *ngIf="modeIsDetail"
-      class="btn btn-danger"
-      (click)="ownerForDeletion = owner"
-      data-bs-toggle="modal"
-      data-bs-target="#delete-dialog"
-      aria-label="Delete owner">
-      <i class="bi bi-trash"></i> Delete
-    </button>
   </div>
 
   <div class="mt-4 d-flex flex-row">

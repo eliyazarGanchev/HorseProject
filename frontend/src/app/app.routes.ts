@@ -3,9 +3,9 @@ import {HorseCreateEditComponent, HorseCreateEditDetailMode} from './component/h
 import {HorseComponent} from './component/horse/horse.component';
 import {OwnerComponent} from "./component/owner/owner.component";
 import {
-  OwnerCreateEditComponent,
-  OwnerCreateEditDetailMode
-} from "./component/owner/owner-create-detail/owner-create-detail.component";
+  OwnerCreateComponent,
+  OwnerCreateMode
+} from "./component/owner/owner-create/owner-create.component";
 
 
 export const routes: Routes = [
@@ -18,7 +18,7 @@ export const routes: Routes = [
 
   { path: 'owners', children: [
       { path: '', component: OwnerComponent },
-      { path: 'create', component: OwnerCreateEditComponent, data: { mode: OwnerCreateEditDetailMode.create } },
+      { path: 'create', component: OwnerCreateComponent, data: { mode: OwnerCreateMode.create } },
     ]},
 
   {path: '**', redirectTo: 'horses'},

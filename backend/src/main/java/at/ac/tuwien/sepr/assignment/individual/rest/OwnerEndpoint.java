@@ -43,6 +43,13 @@ public class OwnerEndpoint {
     return service.search(searchParameters);
   }
 
+/**
+ * Creates a new owner in the system.
+ * @param toCreate the DTO containing the details for the owner to be created
+ * @return the created owner, including its assigned ID and details
+ * @throws FailedToCreateException if an unexpected error occurs during owner creation
+ * @throws ValidationException if the provided owner data is invalid
+ */
   @PostMapping
   public OwnerDto create(@RequestBody OwnerCreateDto toCreate) {
     LOG.info("POST " + BASE_PATH + " query parameters: {}", toCreate);
