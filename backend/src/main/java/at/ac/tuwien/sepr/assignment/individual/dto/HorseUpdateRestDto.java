@@ -14,11 +14,13 @@ public record HorseUpdateRestDto(
     Sex sex,
     Long ownerId,
     Long motherId,
-    Long fatherId
+    Long fatherId,
+    byte[] image,
+    String imageType
 ) {
 
   public HorseUpdateDto toUpdateDtoWithId(Long id) {
-    return new HorseUpdateDto(id, name, description, dateOfBirth, sex, ownerId, motherId, fatherId);
+    return new HorseUpdateDto(id, name, description, dateOfBirth, sex, ownerId, motherId, fatherId,image, imageType);
   }
 
 }

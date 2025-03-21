@@ -10,6 +10,8 @@ export interface Horse {
   owner?: Owner;
   mother?: Horse;
   father?: Horse;
+  image?: File;
+  imageType?: string;
 }
 
 export interface HorseSearch {
@@ -25,6 +27,8 @@ export interface HorseCreate {
   ownerId?: number;
   motherId?: number;
   fatherId?: number;
+  image?: File;
+  imageType?: string;
 }
 
 export function convertFromHorseToCreate(horse: Horse): HorseCreate {
@@ -48,6 +52,8 @@ export interface HorseUpdate {
   ownerId?: number;
   motherId?: number;
   fatherId?: number;
+  image?: File;
+  imageType?: string;
 }
 
 export function convertFromHorseToUpdate(horse: Horse): HorseUpdate {

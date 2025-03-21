@@ -16,5 +16,9 @@ CREATE TABLE IF NOT EXISTS horse
   sex ENUM('MALE', 'FEMALE') NOT NULL,
   owner_id BIGINT,
   mother_id BIGINT,
-  father_id BIGINT
+  father_id BIGINT,
+  image BLOB,
+  image_type VARCHAR(50)
 );
+
+

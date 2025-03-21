@@ -14,7 +14,8 @@ public record HorseCreateDto(
     Sex sex,
     Long ownerId,
     Long motherId,
-    Long fatherId
+    Long fatherId,
+    byte[] image,
+    String imageType
 ) {
-
 }

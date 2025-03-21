@@ -45,6 +45,7 @@ export class HorseCreateEditComponent implements OnInit {
     sex: Sex.female,
   };
   horseBirthDateIsSet = false;
+  selectedImage: File|null = null;
 
 
   constructor(
@@ -193,6 +194,13 @@ export class HorseCreateEditComponent implements OnInit {
     return (owner == null)
       ? ''
       : `${owner.firstName} ${owner.lastName}`;
+  }
+
+  onFileSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length) {
+      this.selectedImage = target.files[0];
+    }
   }
 
 

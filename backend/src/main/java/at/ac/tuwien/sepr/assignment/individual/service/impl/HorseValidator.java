@@ -73,6 +73,9 @@ public class HorseValidator {
       if (horse.dateOfBirth().isAfter(java.time.LocalDate.now())) {
         validationErrors.add("Horse date of birth cannot be in the future");
       }
+      if (horse.dateOfBirth().isBefore(java.time.LocalDate.now().minusYears(62))) {
+        validationErrors.add("Horse date of birth indicates an age over 62 years, which is not possible");
+      }
     }
 
     if (horse.sex() == null) {
@@ -155,6 +158,9 @@ public class HorseValidator {
     }else{
       if (horse.dateOfBirth().isAfter(java.time.LocalDate.now())) {
         validationErrors.add("Horse date of birth cannot be in the future");
+      }
+      if (horse.dateOfBirth().isBefore(java.time.LocalDate.now().minusYears(62))) {
+        validationErrors.add("Horse date of birth indicates an age over 62 years, which is not allowed");
       }
     }
 

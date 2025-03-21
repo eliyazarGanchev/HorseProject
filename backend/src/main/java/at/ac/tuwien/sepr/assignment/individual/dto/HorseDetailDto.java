@@ -15,6 +15,8 @@ public record HorseDetailDto(
     Sex sex,
     OwnerDto owner,
     Long motherId,
-    Long fatherId
+    Long fatherId,
+    byte[] image,
+    String image_type
 ) {
 }
