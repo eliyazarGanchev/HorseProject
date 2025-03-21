@@ -39,3 +39,26 @@ export function convertFromHorseToCreate(horse: Horse): HorseCreate {
   };
 }
 
+export interface HorseUpdate {
+  id: number;
+  name: string;
+  description?: string;
+  dateOfBirth: Date;
+  sex: Sex;
+  ownerId?: number;
+  motherId?: number;
+  fatherId?: number;
+}
+
+export function convertFromHorseToUpdate(horse: Horse): HorseUpdate {
+  return {
+    id: horse.id!,
+    name: horse.name,
+    description: horse.description,
+    dateOfBirth: horse.dateOfBirth,
+    sex: horse.sex,
+    ownerId: horse.owner ? horse.owner.id : undefined,
+    motherId: horse.mother ? horse.mother.id : undefined,
+    fatherId: horse.father ? horse.father.id : undefined,
+  };
+}

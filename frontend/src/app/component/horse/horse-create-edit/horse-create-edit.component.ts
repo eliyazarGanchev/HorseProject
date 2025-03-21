@@ -4,7 +4,7 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {map, Observable, of} from 'rxjs';
 import {AutocompleteComponent} from 'src/app/component/autocomplete/autocomplete.component';
-import {Horse, convertFromHorseToCreate} from 'src/app/dto/horse';
+import {Horse, convertFromHorseToCreate, convertFromHorseToUpdate} from 'src/app/dto/horse';
 import {Owner} from 'src/app/dto/owner';
 import {Sex} from 'src/app/dto/sex';
 import {ErrorFormatterService} from 'src/app/service/error-formatter.service';
@@ -210,7 +210,7 @@ export class HorseCreateEditComponent implements OnInit {
           );
           break;
         case HorseCreateEditDetailMode.edit:
-          observable = this.service.update(this.horse);
+          observable = this.service.update(convertFromHorseToUpdate(this.horse));
           break;
         default:
           console.error('Unknown HorseCreateEditMode', this.mode);
