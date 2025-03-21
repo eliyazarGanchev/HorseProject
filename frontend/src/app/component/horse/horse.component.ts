@@ -64,6 +64,12 @@ export class HorseComponent implements OnInit {
       });
   }
 
+  public formatOwnerName(owner: any): string {
+    return owner == null ? ''
+      : (typeof owner === 'string' ? owner
+        : `${owner.firstName} ${owner.lastName}`);
+  }
+
   onSearch(): void {
     const query = {
       name: this.searchParams.name?.trim() || null,

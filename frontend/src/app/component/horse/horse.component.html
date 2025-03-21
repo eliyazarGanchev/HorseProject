@@ -70,6 +70,7 @@
       name="searchHorseOwner"
       textInputClass="form-control"
       valueNeedsToMatchSuggestion="false"
+      [formatModel]="formatOwnerName"
       [(ngModel)]="searchParams.ownerName"
       (ngModelChange)="onSearch()">
     </app-autocomplete>
