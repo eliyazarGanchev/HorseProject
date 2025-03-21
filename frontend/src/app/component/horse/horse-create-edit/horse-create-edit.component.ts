@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormsModule, NgForm, NgModel} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
-import {Observable, of} from 'rxjs';
+import {map, Observable, of} from 'rxjs';
 import {AutocompleteComponent} from 'src/app/component/autocomplete/autocomplete.component';
 import {Horse, convertFromHorseToCreate} from 'src/app/dto/horse';
 import {Owner} from 'src/app/dto/owner';
@@ -130,9 +130,31 @@ export class HorseCreateEditComponent implements OnInit {
     }
   }
 
+
+
   ownerSuggestions = (input: string) => (input === '')
     ? of([])
     : this.ownerService.searchByName(input, 5);
+
+  public formatHorseName(horse: Horse | null | undefined): string {
+    return horse ? horse.name : '';
+  }
+
+  motherSuggestions = (input: string): Observable<Horse[]> => {
+    return input && input.trim().length > 0
+      ? this.service.search({ name: input, sex: 'FEMALE' }).pipe(
+        map(horses => horses.slice(0, 5))
+      )
+      : of([]);
+  };
+
+  fatherSuggestions = (input: string): Observable<Horse[]> => {
+    return input && input.trim().length > 0
+      ? this.service.search({ name: input, sex: 'MALE' }).pipe(
+        map(horses => horses.slice(0, 5))
+      )
+      : of([]);
+  };
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {

@@ -175,7 +175,7 @@ public class HorseJdbcDao implements HorseDao {
         .param("sex", horse.sex().toString())
         .param("owner_id", horse.ownerId())
         .param("mother_id", horse.motherId())
-        .param("father_id", horse.fatherID())
+        .param("father_id", horse.fatherId())
         .update();
 
     if (updated == 0) {
@@ -192,7 +192,7 @@ public class HorseJdbcDao implements HorseDao {
         horse.sex(),
         horse.ownerId(),
         horse.motherId(),
-        horse.fatherID());
+        horse.fatherId());
   }
 
 

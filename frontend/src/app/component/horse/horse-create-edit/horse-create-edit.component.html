@@ -96,17 +96,19 @@
     <div class="mb-2 col-lg-6">
       <div class="row">
         <label for="horseMother" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
-          Name
+          Mother Name
         </label>
         <div class="col-md-10 col-lg-8">
-          <input
-            type="text"
+          <app-autocomplete
             id="horseMother"
             name="horseMother"
-            placeholder="Mother"
-            class="form-control"
-            [disabled]="modeIsDetail"
-            [(ngModel)]="horse.mother">
+            textInputClass="form-control"
+            valueNeedsToMatchSuggestion="true"
+            [(ngModel)]="horse.mother"
+            [suggestions]="motherSuggestions"
+            [formatModel]="formatHorseName"
+            [disabled]="modeIsDetail">
+          </app-autocomplete>
         </div>
       </div>
     </div>
@@ -114,17 +116,19 @@
     <div class="mb-2 col-lg-6">
       <div class="row">
         <label for="horseFather" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
-          Name
+         Father Name
         </label>
         <div class="col-md-10 col-lg-8">
-          <input
-            type="text"
+          <app-autocomplete
             id="horseFather"
             name="horseFather"
-            placeholder="Father"
-            class="form-control"
-            [disabled]="modeIsDetail"
-            [(ngModel)]="horse.father">
+            textInputClass="form-control"
+            valueNeedsToMatchSuggestion="true"
+            [(ngModel)]="horse.father"
+            [suggestions]="fatherSuggestions"
+            [formatModel]="formatHorseName"
+            [disabled]="modeIsDetail">
+          </app-autocomplete>
         </div>
       </div>
     </div>

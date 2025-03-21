@@ -15,7 +15,7 @@ public record HorseUpdateDto(
     Sex sex,
     Long ownerId,
     Long motherId,
-    Long fatherID
+    Long fatherId
 ) {
 
 }

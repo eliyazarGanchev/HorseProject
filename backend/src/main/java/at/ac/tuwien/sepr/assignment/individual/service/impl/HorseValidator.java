@@ -4,6 +4,7 @@ package at.ac.tuwien.sepr.assignment.individual.service.impl;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
+import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
@@ -45,6 +46,18 @@ public class HorseValidator {
       validationErrors.add("No ID given");
     }
 
+    if (horse.name() == null || horse.name().isBlank()) {
+      validationErrors.add("Horse name is required");
+    } else {
+      if (horse.name().length() > 255) {
+        validationErrors.add("Horse name too long: longer than 255 characters");
+      }
+      String namePattern = "^[A-Z][a-zA-Z-]*$";
+      if (!horse.name().matches(namePattern)) {
+        validationErrors.add("Horse name must start with a capital letter and contain only letters and suitable characters");
+      }
+    }
+
     if (horse.description() != null) {
       if (horse.description().isBlank()) {
         validationErrors.add("Horse description is given but blank");
@@ -52,6 +65,52 @@ public class HorseValidator {
       if (horse.description().length() > 4095) {
         validationErrors.add("Horse description too long: longer than 4095 characters");
       }
+    }
+
+    if (horse.dateOfBirth() == null) {
+      validationErrors.add("Horse date of birth is required");
+    } else {
+      if (horse.dateOfBirth().isAfter(java.time.LocalDate.now())) {
+        validationErrors.add("Horse date of birth cannot be in the future");
+      }
+    }
+
+    if (horse.sex() == null) {
+      validationErrors.add("Horse gender (sex) is required");
+    } else if (!horse.sex().toString().equals("MALE") && !horse.sex().toString().equals("FEMALE")) {
+      validationErrors.add("Invalid horse gender: must be 'MALE' or 'FEMALE'");
+    }
+
+    if (horse.motherId() != null) {
+      try {
+        Horse mother = dao.getById(horse.motherId());
+        if (!mother.dateOfBirth().isBefore(horse.dateOfBirth())) {
+          validationErrors.add("Mother's date of birth must be before the horse's date of birth");
+        }
+        if (mother.sex().equals(Sex.MALE)) {
+          validationErrors.add("Mother should be female");
+        }
+      } catch (NotFoundException e) {
+        validationErrors.add("Mother not found");
+      }
+    }
+
+    if (horse.fatherId() != null) {
+      try {
+        Horse father = dao.getById(horse.fatherId());
+        if (!father.dateOfBirth().isBefore(horse.dateOfBirth())) {
+          validationErrors.add("Father's date of birth must be before the horse's date of birth");
+        }
+        if (father.sex().equals(Sex.FEMALE)) {
+          validationErrors.add("Father should be male");
+        }
+      } catch (NotFoundException e) {
+        validationErrors.add("Father not found");
+      }
+    }
+
+    if (horse.ownerId() != null && horse.ownerId() <= 0) {
+      validationErrors.add("Invalid owner ID: must be a positive number");
     }
 
     if (!validationErrors.isEmpty()) {
@@ -72,9 +131,14 @@ public class HorseValidator {
 
     if (horse.name() == null || horse.name().isBlank()) {
       validationErrors.add("Horse name is required");
-    }
-    if (horse.name() != null && horse.name().length() > 255) {
-      validationErrors.add("Horse name too long: longer than 255 characters");
+    }else {
+      if (horse.name().length() > 255) {
+        validationErrors.add("Horse name too long: longer than 255 characters");
+      }
+      String namePattern = "^[A-Z][a-zA-Z-]*$";
+      if (!horse.name().matches(namePattern)) {
+        validationErrors.add("Horse name must start with a capital letter and contain only letters and suitable characters");
+      }
     }
 
     if (horse.description() != null) {
@@ -88,7 +152,12 @@ public class HorseValidator {
 
     if (horse.dateOfBirth() == null) {
       validationErrors.add("Horse date of birth is required");
+    }else{
+      if (horse.dateOfBirth().isAfter(java.time.LocalDate.now())) {
+        validationErrors.add("Horse date of birth cannot be in the future");
+      }
     }
+
 
 
     if (horse.sex() == null) {
@@ -101,7 +170,7 @@ public class HorseValidator {
         try {
             Horse mother = dao.getById(horse.motherId());
             if(!mother.dateOfBirth().isBefore(horse.dateOfBirth())) {
-              validationErrors.add("Mother's date of birth should be after horse's date of birth");
+              validationErrors.add("Mother's date of birth should be before horse's date of birth");
             }
             if(mother.sex().equals(Sex.MALE)){
               validationErrors.add("Mother should be female");
@@ -115,7 +184,7 @@ public class HorseValidator {
       try {
         Horse father = dao.getById(horse.fatherId());
         if(!father.dateOfBirth().isBefore(horse.dateOfBirth())) {
-          validationErrors.add("Father's date of birth should be after horse's date of birth");
+          validationErrors.add("Father's date of birth should be before horse's date of birth");
         }
         if(father.sex().equals(Sex.FEMALE)){
           validationErrors.add("Father should be male");
