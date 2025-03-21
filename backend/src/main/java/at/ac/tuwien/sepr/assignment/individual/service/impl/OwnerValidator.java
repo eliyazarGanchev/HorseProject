@@ -29,17 +29,29 @@ public class OwnerValidator {
     public void validateForCreate(OwnerCreateDto owner) throws ValidationException {
         LOG.trace("validateForCreate({})", owner);
         List<String> validationErrors = new ArrayList<>();
+        String namePattern = "^[A-Z][a-zA-Z-]*$";
 
         if (owner.firstName() == null || owner.firstName().isBlank()) {
             validationErrors.add("Owner first name is required");
-        } else if (owner.firstName().length() > 255) {
-            validationErrors.add("Owner first name too long: must be 255 characters or less");
+        } else {
+
+            if (!owner.firstName().matches(namePattern)) {
+                validationErrors.add("Owner first name must start with a capital letter and contain only letters and suitable characters");
+            }
+            if (owner.firstName().length() > 255) {
+                validationErrors.add("Owner first name too long: must be 255 characters or less");
+            }
         }
 
         if (owner.lastName() == null || owner.lastName().isBlank()) {
             validationErrors.add("Owner last name is required");
-        } else if (owner.lastName().length() > 255) {
-            validationErrors.add("Owner last name too long: must be 255 characters or less");
+        } else {
+            if (!owner.lastName().matches(namePattern)) {
+                validationErrors.add("Owner last name must start with a capital letter and contain only letters and suitable characters");
+            }
+            if (owner.lastName().length() > 255) {
+                validationErrors.add("Owner last name too long: must be 255 characters or less");
+            }
         }
 
         if (owner.description() != null) {
