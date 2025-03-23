@@ -18,7 +18,10 @@ CREATE TABLE IF NOT EXISTS horse
   mother_id BIGINT,
   father_id BIGINT,
   image BLOB,
-  image_type VARCHAR(50)
+  image_type VARCHAR(50),
+  CONSTRAINT FK_Owner FOREIGN KEY (owner_id) REFERENCES owner(id) ON DELETE SET NULL,
+  CONSTRAINT FK_Mother FOREIGN KEY (mother_id) REFERENCES horse(id) ON DELETE SET NULL,
+  CONSTRAINT FK_Father FOREIGN KEY (father_id) REFERENCES horse(id) ON DELETE SET NULL
 );
 
 

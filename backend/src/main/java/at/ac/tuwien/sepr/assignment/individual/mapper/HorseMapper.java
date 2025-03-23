@@ -7,8 +7,12 @@ import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
+
+import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
+import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,6 +22,12 @@ import org.springframework.stereotype.Component;
 public class HorseMapper {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+
+  private final HorseDao horseDao;
+
+  public HorseMapper(HorseDao horseDao) {
+    this.horseDao = horseDao;
+  }
 
   /**
    * Converts a {@link Horse} entity into a {@link HorseListDto}.
@@ -66,11 +76,34 @@ public class HorseMapper {
         horse.dateOfBirth(),
         horse.sex(),
         getOwner(horse, owners),
-        horse.motherId(),
-        horse.fatherId(),
+        horse.motherId() == null? null: getParent(horse.motherId()),
+        horse.fatherId() == null? null: getParent(horse.fatherId()),
         horse.image(),
         horse.imageType()
     );
+  }
+
+  private HorseDetailDto getParent(Long parentId) {
+    if (parentId == null) {
+      return null;
+    }
+    try {
+      Horse parent = horseDao.getById(parentId);
+      return new HorseDetailDto(
+              parent.id(),
+              parent.name(),
+              null,
+              parent.dateOfBirth(),
+              parent.sex(),
+              null,
+              null,
+              null,
+              null,
+              null
+      );
+    } catch (NotFoundException e) {
+      throw new FatalException("Parent horse with ID %d not found".formatted(parentId), e);
+    }
   }
 
   private OwnerDto getOwner(Horse horse, Map<Long, OwnerDto> owners) {

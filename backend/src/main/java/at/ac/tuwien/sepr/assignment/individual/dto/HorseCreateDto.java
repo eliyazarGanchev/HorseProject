@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.assignment.individual.dto;
 
+import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 import java.time.LocalDate;
 
@@ -17,5 +18,6 @@ public record HorseCreateDto(
     Long fatherId,
     byte[] image,
     String imageType
+
 ) {
 }

@@ -84,6 +84,13 @@ public class HorseValidator {
       validationErrors.add("Invalid horse gender: must be 'MALE' or 'FEMALE'");
     }
 
+    if (horse.motherId() != null && horse.motherId().equals(horse.id())) {
+      validationErrors.add("A horse cannot be its own mother");
+    }
+    if (horse.fatherId() != null && horse.fatherId().equals(horse.id())) {
+      validationErrors.add("A horse cannot be its own father");
+    }
+
     if (horse.motherId() != null) {
       try {
         Horse mother = dao.getById(horse.motherId());
@@ -163,8 +170,6 @@ public class HorseValidator {
         validationErrors.add("Horse date of birth indicates an age over 62 years, which is not allowed");
       }
     }
-
-
 
     if (horse.sex() == null) {
       validationErrors.add("Horse gender (sex) is required");
