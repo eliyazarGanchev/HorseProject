@@ -95,44 +95,55 @@
   <div class="row">
     <div class="mb-2 col-lg-6">
       <div class="row">
-        <label for="horseMother" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
-          Mother Name
+        <label class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Mother
         </label>
         <div class="col-md-10 col-lg-8">
-          <app-autocomplete
-            id="horseMother"
-            name="horseMother"
-            textInputClass="form-control"
-            valueNeedsToMatchSuggestion="true"
-            [(ngModel)]="horse.mother"
-            [suggestions]="motherSuggestions"
-            [formatModel]="formatHorseName"
-            [disabled]="modeIsDetail">
-          </app-autocomplete>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              [value]="horse.mother ? horse.mother.name : ''"
+              disabled
+            />
+            <button
+              *ngIf="horse.mother"
+              type="button"
+              class="btn btn-primary"
+              [routerLink]="['/horses/detail', horse.mother.id]"
+            >
+              Detail
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="mb-2 col-lg-6">
       <div class="row">
-        <label for="horseFather" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
-         Father Name
+        <label class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Father
         </label>
         <div class="col-md-10 col-lg-8">
-          <app-autocomplete
-            id="horseFather"
-            name="horseFather"
-            textInputClass="form-control"
-            valueNeedsToMatchSuggestion="true"
-            [(ngModel)]="horse.father"
-            [suggestions]="fatherSuggestions"
-            [formatModel]="formatHorseName"
-            [disabled]="modeIsDetail">
-          </app-autocomplete>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              [value]="horse.father ? horse.father.name : ''"
+              disabled/>
+            <button
+              *ngIf="horse.father"
+              type="button"
+              class="btn btn-primary"
+              [routerLink]="['/horses/detail', horse.father.id]">
+              Detail
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
 
 
   <div class="row mb-2">
