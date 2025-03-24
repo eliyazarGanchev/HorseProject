@@ -4,7 +4,6 @@ package at.ac.tuwien.sepr.assignment.individual.service.impl;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
-import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
@@ -211,6 +210,24 @@ public class HorseValidator {
 
     if (!validationErrors.isEmpty()) {
       throw new ValidationException("Validation of horse for creation failed", validationErrors);
+    }
+  }
+
+  /**
+   * Validates the provided generation value for the pedigree.
+   *
+   * <p>This method checks that the maximum generation value is not negative. The generation value
+   * represents the maximum number of ancestor generations to display. If the value is non-null
+   * and less than 0, it throws a {@link ValidationException} with an appropriate error message.
+   *
+   * @param maxGenerations the maximum number of generations to display; may be null, which means no specific limit.
+   * @throws ValidationException if {@code maxGenerations} is not null and is less than 0.
+   */
+  public void validatePedigreeGenerations(Integer maxGenerations) throws ValidationException {
+    if (maxGenerations != null && maxGenerations < 0) {
+      List<String> validationErrors = new ArrayList<>();
+      validationErrors.add("Invalid generation value: " + maxGenerations);
+      throw new ValidationException("Generation value must be at least 0", validationErrors);
     }
   }
 

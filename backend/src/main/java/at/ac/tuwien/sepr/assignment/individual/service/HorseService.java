@@ -71,7 +71,6 @@ public interface HorseService {
 
   /**
    * Searches for horses based on the provided search criteria.
-   * <p>
    * The search criteria are specified in a {@link HorseSearchDto}. Each field in the DTO is optional;
    * if a field is null, that criterion will not be applied. The supported criteria are:
    * <ul>
@@ -87,4 +86,21 @@ public interface HorseService {
    * @return a stream of {@link HorseListDto} objects representing the horses that match the specified criteria
    */
   Stream<HorseListDto> search(HorseSearchDto searchParameters);
+
+  /**
+   * Retrieves the pedigree (family tree) of the horse with the given ID.
+   * This method returns a hierarchical representation of the horse’s ancestry as a
+   * {@link HorseTreeDto}. The pedigree includes the horse’s direct parents and, recursively,
+   * their parents up to the specified maximum number of generations.
+   * If the {@code maxGenerations} parameter is provided, only up to that many generations
+   * of ancestors are included; if it is null, all available generations will be returned.
+   *
+   * @param id the unique identifier of the horse whose pedigree is to be retrieved.
+   * @param maxGenerations the maximum number of ancestor generations to include;
+   *                       if null, the pedigree will include all available generations.
+   * @return a {@link HorseTreeDto} representing the horse's pedigree.
+   * @throws NotFoundException if no horse with the given ID exists in the persistent data store.
+   * @throws ValidationException if the provided generation limit is invalid (e.g., negative).
+   */
+  HorseTreeDto getPedigree(long id, Integer maxGenerations) throws NotFoundException, ValidationException;
 }

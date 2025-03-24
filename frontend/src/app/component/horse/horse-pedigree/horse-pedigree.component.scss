@@ -1,0 +1,52 @@
+.pedigree-node {
+  margin-bottom: 8px;
+}
+
+.node-box {
+  border: 2px solid #333;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: #fff;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.node-header {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-btn {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  border-radius: 50%;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  line-height: 26px;
+  padding: 0;
+}
+
+.node-name {
+  font-weight: bold;
+  margin-right: 8px;
+}
+.node-dob {
+  color: #666;
+}
+
+.ms-auto {
+  margin-left: auto !important;
+}
+
+.node-children {
+  margin-left: 20px;
+  padding-left: 10px;
+}
+
+.child-node {
+  margin-top: 8px;
+}

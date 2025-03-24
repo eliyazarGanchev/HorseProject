@@ -2,11 +2,15 @@ package at.ac.tuwien.sepr.assignment.individual.mapper;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseTreeDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
@@ -118,4 +122,57 @@ public class HorseMapper {
     return owner;
   }
 
+  /**
+   * Converts a flat list of {@link Horse} entities (representing the pedigree)
+   * into a hierarchical {@link HorseTreeDto} for the horse with the given id.
+   * The list is expected to contain the horse with the given id and all its ancestors.
+   * The returned tree contains for each horse only the id, name, date of birth, sex, and its parent subtrees.
+   *
+   * @param id the ID of the root horse whose pedigree is to be built
+   * @param results the list of Horse entities representing the pedigree (ancestors)
+   * @return a hierarchical {@link HorseTreeDto} representing the horse’s pedigree
+   * @throws FatalException if the root horse with the given id is not found in the list
+   */
+  public HorseTreeDto entityToTreeDto(long id, List<Horse> results) {
+    LOG.trace("entityToDto({}, {})", id, results);
+    Map<Long, Horse> horseMap = results.stream()
+            .collect(Collectors.toMap(Horse::id, Function.identity(),
+                    (address1, address2) -> address1));
+    LOG.debug("Horse whose tree is being built: {}", horseMap.get(id));
+    return convertToTreeDto(horseMap.get(id), horseMap);
+  }
+
+  /**
+   * Recursively converts a Horse entity and its parents (if available in the map)
+   * into a HorseTreeDto.
+   *
+   * @param horse the horse entity to convert
+   * @param horseMap a map from horse id to Horse entity (all ancestors)
+   * @return the corresponding {@link HorseTreeDto}
+   */
+  private HorseTreeDto convertToTreeDto(Horse horse, Map<Long, Horse> horseMap) {
+    HorseTreeDto motherDto = null;
+    if (horse.motherId() != null) {
+      Horse mother = horseMap.get(horse.motherId());
+      if (mother != null) {
+        motherDto = convertToTreeDto(mother, horseMap);
+      }
+    }
+    HorseTreeDto fatherDto = null;
+    if (horse.fatherId() != null) {
+      Horse father = horseMap.get(horse.fatherId());
+      if (father != null) {
+        fatherDto = convertToTreeDto(father, horseMap);
+      }
+    }
+
+    return new HorseTreeDto(
+            horse.id(),
+            horse.name(),
+            horse.dateOfBirth(),
+            horse.sex(),
+            motherDto,
+            fatherDto
+    );
+  }
 }

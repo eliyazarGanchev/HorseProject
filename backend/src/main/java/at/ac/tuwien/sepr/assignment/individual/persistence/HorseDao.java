@@ -85,4 +85,6 @@ public interface HorseDao {
    * @return a list of horses that match the provided search criteria
    */
   List<Horse> search(HorseSearchDto searchParameters);
+
+  List<Horse> getPedigree(long id, Integer maxGenerations);
 }

@@ -1,0 +1,64 @@
+<div *ngIf="horseTree;">
+  <h2>{{ horseTree.name }}'s Pedigree</h2>
+  <ng-container
+    *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horseTree }"
+  ></ng-container>
+</div>
+
+<app-confirm-delete-dialog
+  id="delete-dialog"
+  [hidden]="!horseForDeletion"
+  [deleteWhat]="horseForDeletion?.name"
+  (confirm)="deleteHorse(horseForDeletion!)"
+></app-confirm-delete-dialog>
+
+
+<ng-template #recursiveTemplate let-horse>
+  <div class="pedigree-node">
+    <div class="node-box">
+      <div class="node-header">
+        <button
+          class="toggle-btn"
+          (click)="horse.expanded = !horse.expanded">
+          {{ horse.expanded ? '-' : '+' }}
+        </button>
+
+        <span class="node-name">{{ horse.name }}</span>
+        <span class="node-dob">({{ horse.dateOfBirth | date: 'mediumDate' }})</span>
+
+        <button
+          type="button"
+          class="btn btn-info btn-sm ms-auto"
+          [routerLink]="['/horses/detail', horse.id]"
+        >
+          Details
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger btn-sm ms-2"
+          (click)="onDeleteClicked(horse)"
+          data-bs-toggle="modal"
+          data-bs-target="#delete-dialog">
+          Delete
+        </button>
+
+      </div>
+    </div>
+
+    <div
+      class="node-children"
+      *ngIf="horse.expanded && (horse.mother || horse.father)"
+    >
+      <div *ngIf="horse.mother" class="child-node">
+        <ng-container
+          *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horse.mother }"
+        ></ng-container>
+      </div>
+      <div *ngIf="horse.father" class="child-node">
+        <ng-container
+          *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horse.father }"
+        ></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>

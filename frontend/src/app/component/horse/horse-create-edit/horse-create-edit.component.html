@@ -179,6 +179,25 @@
       aria-label="Delete horse">
       <i class="bi bi-trash"></i> Delete
     </button>
+
+    <div class="ms-auto d-flex align-items-center">
+      <input
+        type="number"
+        #maxInput
+        min="1"
+        class="form-control me-2"
+        placeholder="Generations"
+        style="width: 150px;"
+      >
+      <button
+        type="button"
+        class="btn btn-info"
+        (click)="goToPedigree(maxInput.value)"
+      >
+        View Pedigree
+      </button>
+    </div>
+
   </div>
 
   <app-confirm-delete-dialog

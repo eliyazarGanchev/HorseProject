@@ -6,6 +6,7 @@ import {
   OwnerCreateComponent,
   OwnerCreateMode
 } from "./component/owner/owner-create/owner-create.component";
+import {HorsePedigreeComponent} from "./component/horse/horse-pedigree/horse-pedigree.component";
 
 
 export const routes: Routes = [
@@ -14,6 +15,7 @@ export const routes: Routes = [
       {path: 'create', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.create}},
       {path: 'edit/:id', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.edit}},
       {path: 'detail/:id', component: HorseCreateEditComponent, data: {mode: HorseCreateEditDetailMode.detail}},
+      { path: 'pedigree/:id', component: HorsePedigreeComponent }
     ]},
 
   { path: 'owners', children: [

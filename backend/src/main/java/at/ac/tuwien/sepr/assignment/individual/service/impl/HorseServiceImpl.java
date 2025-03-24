@@ -11,11 +11,11 @@ import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
 import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
 import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +106,14 @@ public class HorseServiceImpl implements HorseService {
     LOG.trace("search({})", searchParameters);
     return dao.search(searchParameters).stream()
             .map(horse -> mapper.entityToListDto(horse, ownerMapForSingleId(horse.ownerId())));
+  }
+
+  @Override
+  public HorseTreeDto getPedigree(long id, Integer maxGenerations) throws NotFoundException, ValidationException {
+    LOG.trace("getPedigree({}, {})", id, maxGenerations);
+    validator.validatePedigreeGenerations(maxGenerations);
+    List<Horse> results = dao.getPedigree(id, maxGenerations);
+    return mapper.entityToTreeDto(id, results);
   }
 
 

@@ -2,7 +2,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {map, Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {Horse, HorseCreate} from '../dto/horse';
+import {Horse, HorseCreate, HorsePedigree} from '../dto/horse';
 import {formatIsoDate} from "../utils/date-helper";
 
 
@@ -119,4 +119,11 @@ export class HorseService {
       .pipe(map(horses => horses.map(this.fixHorseDate)));
   }
 
+  getPedigree(id: number, maxGenerations: number | null) {
+    let params = new HttpParams();
+    if (maxGenerations !== null) {
+      params = params.set('maxGenerations', maxGenerations ? maxGenerations.toString() : '3');
+    }
+    return this.http.get<HorsePedigree>(`${baseUri}/${id}/pedigree`, { params });
+  }
 }

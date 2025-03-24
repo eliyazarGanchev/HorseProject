@@ -69,6 +69,20 @@ public class HorseJdbcDao implements HorseDao {
                   "AND (:sex IS NULL OR h.sex = :sex) " +
                   "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE UPPER(:ownerName) || '%')";
 
+  private static final String SQL_GET_PEDIGREE =
+          "WITH RECURSIVE pedigree (id, name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type, generation) AS ( " +
+                  "  SELECT id, name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type, 0 AS generation " +
+                  "  FROM " + TABLE_NAME + " " +
+                  "  WHERE id = :id " +
+                  "  UNION ALL " +
+                  "  SELECT h.id, h.name, h.description, h.date_of_birth, h.sex, h.owner_id, h.mother_id, h.father_id, h.image, h.image_type, p.generation + 1 " +
+                  "  FROM " + TABLE_NAME + " h " +
+                  "  INNER JOIN pedigree p ON h.id = p.mother_id OR h.id = p.father_id " +
+                  "  WHERE (:maxGenerations IS NULL OR p.generation < :maxGenerations) " +
+                  ") " +
+                  "SELECT id, name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type " +
+                  "FROM pedigree";
+
   private final JdbcClient jdbcClient;
 
   @Autowired
@@ -164,6 +178,16 @@ public class HorseJdbcDao implements HorseDao {
             .param("date_of_birth", searchParameters.date_of_birth())
             .param("sex", searchParameters.sex() != null ? searchParameters.sex().toString() : null)
             .param("ownerName", searchParameters.ownerName())
+            .query(this::mapRow)
+            .list();
+  }
+
+  @Override
+  public List<Horse> getPedigree(long id, Integer maxGenerations) {
+    LOG.trace("getPedigree({}, {})", id, maxGenerations);
+    return jdbcClient.sql(SQL_GET_PEDIGREE)
+            .param("id", id)
+            .param("maxGenerations", maxGenerations)
             .query(this::mapRow)
             .list();
   }

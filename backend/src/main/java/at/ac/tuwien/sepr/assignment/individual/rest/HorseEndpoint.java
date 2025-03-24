@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -101,7 +102,7 @@ public class HorseEndpoint {
    * @throws ResponseStatusException if the creation process fails due to validation, conflict, or an internal error
    */
   @PostMapping
-  public HorseDetailDto create(@RequestBody HorseCreateDto toCreate) {
+  public HorseDetailDto create(@RequestBody HorseCreateDto toCreate, @RequestParam MultipartFile file) {
     LOG.info("POST " + BASE_PATH);
     LOG.debug("request parameters: {}", toCreate);
     try{
@@ -148,6 +149,32 @@ public class HorseEndpoint {
     }catch (NotFoundException e){
       HttpStatus status = HttpStatus.NOT_FOUND;
       logClientError(status, "Horse to delete not found", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Returns the pedigree (family tree of ancestors) for the horse with the given ID.
+   *
+   * @param id the unique identifier of the horse
+   * @param maxGenerations (optional) how many generations of ancestors to fetch.
+   * @return a HorseTreeDto that includes mother/father up to the specified depth
+   */
+  @GetMapping("/{id}/pedigree")
+  public HorseTreeDto getPedigree(
+          @PathVariable("id") long id,
+          @RequestParam(value = "maxGenerations",required = false) Integer maxGenerations
+  ) {
+    LOG.info("GET "+  BASE_PATH + "/{}"+ "/{}", id, maxGenerations);
+    try {
+      return service.getPedigree(id, maxGenerations);
+    } catch (NotFoundException e) {
+      HttpStatus status = HttpStatus.NOT_FOUND;
+      logClientError(status, "Pedigree fetch failed: Horse not found", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }catch (ValidationException e){
+      HttpStatus status = HttpStatus.BAD_REQUEST;
+      logClientError(status, "Pedigree fetch failed", e);
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
   }

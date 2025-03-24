@@ -56,6 +56,16 @@ export interface HorseUpdate {
   imageType?: string;
 }
 
+export interface HorsePedigree {
+  id: number;
+  name: string;
+  dateOfBirth: Date;
+  sex: Sex;
+  mother?: HorsePedigree;
+  father?: HorsePedigree;
+  expanded?: boolean;
+}
+
 export function convertFromHorseToUpdate(horse: Horse): HorseUpdate {
   return {
     id: horse.id!,
