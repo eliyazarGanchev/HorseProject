@@ -102,7 +102,7 @@ public class HorseEndpoint {
    * @throws ResponseStatusException if the creation process fails due to validation, conflict, or an internal error
    */
   @PostMapping
-  public HorseDetailDto create(@RequestBody HorseCreateDto toCreate, @RequestParam MultipartFile file) {
+  public HorseDetailDto create(@RequestBody HorseCreateDto toCreate) {
     LOG.info("POST " + BASE_PATH);
     LOG.debug("request parameters: {}", toCreate);
     try{

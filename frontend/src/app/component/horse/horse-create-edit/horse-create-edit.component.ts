@@ -158,11 +158,15 @@ export class HorseCreateEditComponent implements OnInit {
   };
 
   goToPedigree(value: string): void {
-    const maxGen = value !== '' ? +value : 3;
-    this.router.navigate(
-      ['/horses/pedigree', this.horse.id],
-      { queryParams: { maxGenerations: maxGen } }
-    );
+    const maxGenerations = value?.trim();
+
+    if (!maxGenerations) {
+      this.router.navigate(['/horses/pedigree', this.horse.id]);
+    } else {
+      this.router.navigate(['/horses/pedigree', this.horse.id], {
+        queryParams: { maxGenerations: maxGenerations }
+      });
+    }
   }
 
 

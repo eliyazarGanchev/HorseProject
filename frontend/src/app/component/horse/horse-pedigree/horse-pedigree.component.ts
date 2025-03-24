@@ -43,8 +43,10 @@ export class HorsePedigreeComponent implements OnInit {
         return;
       }
       const genParam = this.route.snapshot.queryParamMap.get('maxGenerations');
-      if (genParam) {
+      if (genParam && genParam.trim() !== "") {
         this.maxGenerations = +genParam;
+      } else {
+        this.maxGenerations = null;
       }
       this.fetchPedigree();
     });
@@ -78,14 +80,23 @@ export class HorsePedigreeComponent implements OnInit {
   private fetchPedigree(): void {
     this.horseService.getPedigree(this.id, this.maxGenerations).subscribe({
       next: (data: HorsePedigree) => {
-        console.log('Pedigree data:', data);
         this.horseTree = data;
+        this.initializeExpanded(this.horseTree);
       },
       error: (error: any) => {
-        console.error('Error fetching pedigree', error);
         this.toastr.error(this.errorFormatter.format(error), 'Could Not Fetch Pedigree');
       }
     });
+  }
+
+  private initializeExpanded(horse: HorsePedigree): void {
+    horse.expanded = true;
+    if (horse.mother) {
+      this.initializeExpanded(horse.mother);
+    }
+    if (horse.father) {
+      this.initializeExpanded(horse.father);
+    }
   }
 
 }
