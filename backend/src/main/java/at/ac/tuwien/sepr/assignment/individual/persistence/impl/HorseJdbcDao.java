@@ -188,7 +188,7 @@ public class HorseJdbcDao implements HorseDao {
     return jdbcClient.sql(SQL_SEARCH)
             .param("name", searchParameters.name())
             .param("description", searchParameters.description())
-            .param("date_of_birth", searchParameters.date_of_birth())
+            .param("date_of_birth", searchParameters.dateOfBirth())
             .param("sex", searchParameters.sex() != null ? searchParameters.sex().toString() : null)
             .param("ownerName", searchParameters.ownerName())
             .query(this::mapRow)

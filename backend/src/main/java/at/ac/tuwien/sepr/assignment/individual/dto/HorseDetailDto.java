@@ -17,6 +17,6 @@ public record HorseDetailDto(
     HorseDetailDto mother,
     HorseDetailDto father,
     byte[] image,
-    String image_type
+    String imageType
 ) {
 }

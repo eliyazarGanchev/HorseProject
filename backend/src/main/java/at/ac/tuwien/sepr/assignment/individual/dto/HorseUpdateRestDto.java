@@ -21,7 +21,7 @@ public record HorseUpdateRestDto(
 ) {
 
   public HorseUpdateDto toUpdateDtoWithId(Long id) {
-    return new HorseUpdateDto(id, name, description, dateOfBirth, sex, ownerId, motherId, fatherId,image, imageType);
+    return new HorseUpdateDto(id, name, description, dateOfBirth, sex, ownerId, motherId, fatherId, image, imageType);
   }
 
 }

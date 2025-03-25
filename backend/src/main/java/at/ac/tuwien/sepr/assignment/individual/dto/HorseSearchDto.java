@@ -12,7 +12,7 @@ public record HorseSearchDto(
     String name,
     String description,
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    LocalDate date_of_birth,
+    LocalDate dateOfBirth,
     Sex sex,
     String ownerName
 ) {
