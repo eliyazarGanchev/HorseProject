@@ -61,7 +61,7 @@ public class HorseJdbcDao implements HorseDao {
           "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
 
   private static final String SQL_SEARCH =
-          "SELECT h.* FROM horse h " +
+          "SELECT h.*" + " FROM " + TABLE_NAME + " h " +
                   "LEFT JOIN owner o ON h.owner_id = o.id " +
                   "WHERE (COALESCE(:name, '') = '' OR UPPER(h.name) LIKE UPPER(:name) || '%') " +
                   "AND (COALESCE(:description, '') = '' OR UPPER(h.description) LIKE '%' || UPPER(:description) || '%') " +
@@ -70,17 +70,17 @@ public class HorseJdbcDao implements HorseDao {
                   "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE UPPER(:ownerName) || '%')";
 
   private static final String SQL_GET_PEDIGREE =
-          "WITH RECURSIVE pedigree (id, name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type, generation) AS ( " +
-                  "  SELECT id, name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type, 0 AS generation " +
-                  "  FROM " + TABLE_NAME + " " +
-                  "  WHERE id = :id " +
-                  "  UNION ALL " +
-                  "  SELECT h.id, h.name, h.description, h.date_of_birth, h.sex, h.owner_id, h.mother_id, h.father_id, h.image, h.image_type, p.generation + 1 " +
-                  "  FROM " + TABLE_NAME + " h " +
-                  "  INNER JOIN pedigree p ON h.id = p.mother_id OR h.id = p.father_id " +
-                  "  WHERE (:maxGenerations IS NULL OR p.generation < :maxGenerations) " +
+          "WITH RECURSIVE pedigree (id, name, date_of_birth, sex, mother_id, father_id, generation) AS ( " +
+                  "SELECT id, name, date_of_birth, sex, mother_id, father_id, 0 AS generation " +
+                  "FROM " + TABLE_NAME + " " +
+                  "WHERE id = :id " +
+                  "UNION ALL " +
+                  "SELECT h.id, h.name, h.date_of_birth, h.sex, h.mother_id, h.father_id, p.generation + 1 " +
+                  "FROM " + TABLE_NAME + " h " +
+                  "INNER JOIN pedigree p ON h.id = p.mother_id OR h.id = p.father_id " +
+                  "WHERE (:maxGenerations IS NULL OR p.generation < :maxGenerations) " +
                   ") " +
-                  "SELECT id, name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type " +
+                  "SELECT id, name, date_of_birth, sex, mother_id, father_id " +
                   "FROM pedigree";
 
   private final JdbcClient jdbcClient;
@@ -188,7 +188,7 @@ public class HorseJdbcDao implements HorseDao {
     return jdbcClient.sql(SQL_GET_PEDIGREE)
             .param("id", id)
             .param("maxGenerations", maxGenerations)
-            .query(this::mapRow)
+            .query(this::mapRowPedigree)
             .list();
   }
 
@@ -243,4 +243,20 @@ public class HorseJdbcDao implements HorseDao {
         result.getBytes("image"),
         result.getString("image_type"));
   }
+
+  private Horse mapRowPedigree(ResultSet result, int rownum) throws SQLException {
+    return new Horse(
+            result.getLong("id"),
+            result.getString("name"),
+            null,
+            result.getDate("date_of_birth").toLocalDate(),
+            Sex.valueOf(result.getString("sex")),
+            null,
+            result.getObject("mother_id", Long.class),
+            result.getObject("father_id", Long.class),
+            null,
+            null
+    );
+  }
+
 }
