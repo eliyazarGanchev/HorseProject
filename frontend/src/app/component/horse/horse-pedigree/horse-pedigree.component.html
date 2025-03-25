@@ -1,4 +1,10 @@
-<div *ngIf="horseTree;">
+<div *ngIf="showNoGenerationsNote">
+  <p class="text-muted">Please enter a number of generations to display the pedigree.</p>
+  <button type="button" class="btn btn-secondary" (click)="goBack()">Back</button>
+</div>
+
+
+<div *ngIf="!showNoGenerationsNote && horseTree">
   <h2>{{ horseTree.name }}'s Pedigree</h2>
   <ng-container
     *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horseTree }"

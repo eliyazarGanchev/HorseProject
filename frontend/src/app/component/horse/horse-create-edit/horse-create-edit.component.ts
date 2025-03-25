@@ -14,6 +14,7 @@ import {formatIsoDate} from "../../../utils/date-helper";
 import {NgIf} from "@angular/common";
 import {ConfirmDeleteDialogComponent} from "../../confirm-delete-dialog/confirm-delete-dialog.component";
 
+
 export enum HorseCreateEditDetailMode {
   create,
   edit,
@@ -29,7 +30,7 @@ export enum HorseCreateEditDetailMode {
     FormsModule,
     NgIf,
     RouterLink,
-    ConfirmDeleteDialogComponent
+    ConfirmDeleteDialogComponent,
   ],
   standalone: true,
   styleUrls: ['./horse-create-edit.component.scss']
@@ -99,10 +100,6 @@ export class HorseCreateEditComponent implements OnInit {
     }
   }
 
-  get modeIsCreate(): boolean {
-    return this.mode === HorseCreateEditDetailMode.create;
-  }
-
   get modeIsDetail(): boolean {
     return this.mode === HorseCreateEditDetailMode.detail;
   }
@@ -168,8 +165,6 @@ export class HorseCreateEditComponent implements OnInit {
       });
     }
   }
-
-
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {

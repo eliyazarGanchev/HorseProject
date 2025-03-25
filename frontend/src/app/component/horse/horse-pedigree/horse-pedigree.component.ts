@@ -3,6 +3,7 @@ import {ActivatedRoute, RouterLink} from '@angular/router';
 import { HorsePedigree } from 'src/app/dto/horse';
 import { HorseService } from 'src/app/service/horse.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 import { ErrorFormatterService } from 'src/app/service/error-formatter.service';
 import {DatePipe, NgIf, NgTemplateOutlet} from "@angular/common";
 import {ConfirmDeleteDialogComponent} from "../../confirm-delete-dialog/confirm-delete-dialog.component";
@@ -16,7 +17,7 @@ import {ConfirmDeleteDialogComponent} from "../../confirm-delete-dialog/confirm-
     RouterLink,
     NgIf,
     NgTemplateOutlet,
-    ConfirmDeleteDialogComponent
+    ConfirmDeleteDialogComponent,
   ],
   standalone: true
 })
@@ -25,12 +26,14 @@ export class HorsePedigreeComponent implements OnInit {
   maxGenerations: number | null = null;
   id!: number;
   horseForDeletion?: HorsePedigree | undefined;
+  showNoGenerationsNote = false;
 
   constructor(
     private route: ActivatedRoute,
     private horseService: HorseService,
     private toastr: ToastrService,
-    private errorFormatter: ErrorFormatterService
+    private errorFormatter: ErrorFormatterService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -45,11 +48,19 @@ export class HorsePedigreeComponent implements OnInit {
       const genParam = this.route.snapshot.queryParamMap.get('maxGenerations');
       if (genParam && genParam.trim() !== "") {
         this.maxGenerations = +genParam;
+        this.showNoGenerationsNote = false;
       } else {
         this.maxGenerations = null;
+        this.showNoGenerationsNote = true;
       }
-      this.fetchPedigree();
+      if (!this.showNoGenerationsNote) {
+        this.fetchPedigree();
+      }
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/horses/detail', this.id]);
   }
 
   onDeleteClicked(horse: HorsePedigree): void {
