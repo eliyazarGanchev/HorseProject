@@ -34,7 +34,7 @@ public interface OwnerService {
 
   /**
    * Search for owners matching the criteria in {@code searchParameters}.
-   * A owner is considered matched, if its name contains {@code searchParameters.name} as a substring.
+   * An owner is considered matched, if its name contains {@code searchParameters.name} as a substring.
    * The returned stream of owners never contains more than {@code searchParameters.maxAmount} elements,
    * even if there would be more matches in the persistent data store.
    *
