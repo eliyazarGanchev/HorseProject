@@ -60,6 +60,10 @@ public class HorseJdbcDao implements HorseDao {
   private static final String SQL_DELETE =
           "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
 
+  private static final String SQL_GET_CHILDREN_BY_PARENT =
+          "SELECT * FROM " + TABLE_NAME + " WHERE mother_id = :parentId OR father_id = :parentId";
+
+
   private static final String SQL_SEARCH =
           "SELECT h.*" + " FROM " + TABLE_NAME + " h " +
                   "LEFT JOIN owner o ON h.owner_id = o.id " +
@@ -117,6 +121,15 @@ public class HorseJdbcDao implements HorseDao {
     }
 
     return horses.getFirst();
+  }
+
+  @Override
+  public List<Horse> getChildrenByParentId(Long parentId) {
+    return jdbcClient
+            .sql(SQL_GET_CHILDREN_BY_PARENT)
+            .param("parentId", parentId)
+            .query(this::mapRow)
+            .list();
   }
 
   @Override

@@ -122,10 +122,37 @@ public class HorseValidator {
       validationErrors.add("Invalid owner ID: must be a positive number");
     }
 
+    try {
+      Horse existing = dao.getById(horse.id());
+      List<Horse> children = dao.getChildrenByParentId(horse.id());
+      if (!children.isEmpty()) {
+        if (!existing.sex().equals(horse.sex())) {
+          for (Horse child : children) {
+            if (child.motherId() != null && child.motherId().equals(horse.id()) && horse.sex() != Sex.FEMALE) {
+              validationErrors.add("Cannot change parent's sex to " + horse.sex() +
+                      " because horse with ID " + child.id() + " lists this horse as its mother.");
+            }
+            if (child.fatherId() != null && child.fatherId().equals(horse.id()) && horse.sex() != Sex.MALE) {
+              validationErrors.add("Cannot change parent's sex to " + horse.sex() +
+                      " because horse with ID " + child.id() + " lists this horse as its father.");
+            }
+          }
+        }
+        if (!existing.dateOfBirth().equals(horse.dateOfBirth())) {
+          for (Horse child : children) {
+            if (!horse.dateOfBirth().isBefore(child.dateOfBirth())) {
+              validationErrors.add("Parent's new date of birth must be before the child's date of birth (child ID " + child.id() + ").");
+            }
+          }
+        }
+      }
+    } catch (NotFoundException e) {
+      validationErrors.add("Existing horse record not found for parent's update.");
+    }
+
     if (!validationErrors.isEmpty()) {
       throw new ValidationException("Validation of horse for update failed", validationErrors);
     }
-
   }
 
   /**
@@ -215,8 +242,7 @@ public class HorseValidator {
 
   /**
    * Validates the provided generation value for the pedigree.
-   *
-   * <p>This method checks that the maximum generation value is not negative. The generation value
+   * This method checks that the maximum generation value is not negative. The generation value
    * represents the maximum number of ancestor generations to display. If the value is non-null
    * and less than 0, it throws a {@link ValidationException} with an appropriate error message.
    *

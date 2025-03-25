@@ -3,11 +3,10 @@ package at.ac.tuwien.sepr.assignment.individual.persistence;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseTreeDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
-
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -86,5 +85,29 @@ public interface HorseDao {
    */
   List<Horse> search(HorseSearchDto searchParameters);
 
+  /**
+   * Retrieves the pedigree (ancestry tree) for the horse with the specified ID.
+   * The pedigree is constructed by recursively fetching the ancestors (mother and father)
+   * of the specified horse. The recursion is limited by the given maximum number of generations.
+   * If the parameter {@code maxGenerations} is {@code null}, no generation limit is applied
+   * and the complete ancestry tree is returned.
+   * The returned list contains all {@link Horse} entities that are part of the pedigree,
+   * which can then be converted into a hierarchical structure (e.g., a {@link HorseTreeDto})
+   * by the mapper.
+   *
+   * @param id the unique identifier of the horse for which to retrieve the pedigree
+   * @param maxGenerations the maximum number of generations to include in the pedigree;
+   *                       if {@code null}, the entire pedigree is returned
+   * @return a list of {@link Horse} entities representing the ancestry of the specified horse
+   * @throws NotFoundException if no horse with the specified ID exists
+   */
   List<Horse> getPedigree(long id, Integer maxGenerations);
+
+  /**
+   * Retrieves all horses for which the given parent is registered as either the mother or the father.
+   *
+   * @param parentId the ID of the parent horse
+   * @return a list of Horse entities that have this parent
+   */
+  List<Horse> getChildrenByParentId(Long parentId);
 }
