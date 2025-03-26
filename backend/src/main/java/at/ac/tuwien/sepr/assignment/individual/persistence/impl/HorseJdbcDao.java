@@ -54,8 +54,10 @@ public class HorseJdbcDao implements HorseDao {
           """;
 
   private static final String SQL_INSERT =
-          "INSERT INTO " + TABLE_NAME + " (name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type) " +
-                  "VALUES (:name, :description, :date_of_birth, :sex, :owner_id, :mother_id, :father_id, :image, :image_type)";
+          "INSERT INTO "
+                  + TABLE_NAME
+                  + " (name, description, date_of_birth, sex, owner_id, mother_id, father_id, image, image_type) "
+                  + "VALUES (:name, :description, :date_of_birth, :sex, :owner_id, :mother_id, :father_id, :image, :image_type)";
 
   private static final String SQL_DELETE =
           "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
@@ -65,30 +67,36 @@ public class HorseJdbcDao implements HorseDao {
 
 
   private static final String SQL_SEARCH =
-          "SELECT h.*" + " FROM " + TABLE_NAME + " h " +
-                  "LEFT JOIN owner o ON h.owner_id = o.id " +
-                  "WHERE (COALESCE(:name, '') = '' OR UPPER(h.name) LIKE UPPER(:name) || '%') " +
-                  "AND (COALESCE(:description, '') = '' OR UPPER(h.description) LIKE '%' || UPPER(:description) || '%') " +
-                  "AND (:date_of_birth IS NULL OR h.date_of_birth <= :date_of_birth) " +
-                  "AND (:sex IS NULL OR h.sex = :sex) " +
-                  "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE UPPER(:ownerName) || '%')";
+          "SELECT h.*" + " FROM " + TABLE_NAME + " h "
+                  + "LEFT JOIN owner o ON h.owner_id = o.id "
+                  + "WHERE (COALESCE(:name, '') = '' OR UPPER(h.name) LIKE UPPER(:name) || '%') "
+                  + "AND (COALESCE(:description, '') = '' OR UPPER(h.description) LIKE '%' || UPPER(:description) || '%') "
+                  + "AND (:date_of_birth IS NULL OR h.date_of_birth <= :date_of_birth) "
+                  + "AND (:sex IS NULL OR h.sex = :sex) "
+                  + "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE UPPER(:ownerName) || '%')";
 
   private static final String SQL_GET_PEDIGREE =
-          "WITH RECURSIVE pedigree (id, name, date_of_birth, sex, mother_id, father_id, generation) AS ( " +
-                  "SELECT id, name, date_of_birth, sex, mother_id, father_id, 0 AS generation " +
-                  "FROM " + TABLE_NAME + " " +
-                  "WHERE id = :id " +
-                  "UNION ALL " +
-                  "SELECT h.id, h.name, h.date_of_birth, h.sex, h.mother_id, h.father_id, p.generation + 1 " +
-                  "FROM " + TABLE_NAME + " h " +
-                  "INNER JOIN pedigree p ON h.id = p.mother_id OR h.id = p.father_id " +
-                  "WHERE (:maxGenerations IS NULL OR p.generation < :maxGenerations) " +
-                  ") " +
-                  "SELECT id, name, date_of_birth, sex, mother_id, father_id " +
-                  "FROM pedigree";
+          "WITH RECURSIVE pedigree (id, name, date_of_birth, sex, mother_id, father_id, generation) AS ( "
+                  + "SELECT id, name, date_of_birth, sex, mother_id, father_id, 0 AS generation "
+                  + "FROM " + TABLE_NAME + " "
+                  + "WHERE id = :id "
+                  + "UNION ALL "
+                  + "SELECT h.id, h.name, h.date_of_birth, h.sex, h.mother_id, h.father_id, p.generation + 1 "
+                  + "FROM " + TABLE_NAME + " h "
+                  + "INNER JOIN pedigree p ON h.id = p.mother_id OR h.id = p.father_id "
+                  + "WHERE (:maxGenerations IS NULL OR p.generation < :maxGenerations) "
+                  + ") "
+                  + "SELECT id, name, date_of_birth, sex, mother_id, father_id "
+                  + "FROM pedigree";
 
   private final JdbcClient jdbcClient;
 
+  /**
+   * Constructs a new {@code HorseJdbcDao} instance with the provided {@link JdbcClient}.
+   *
+   * @param jdbcClient the JDBC client used to interact with the underlying database
+   *                   for performing CRUD operations related to horse entities.
+   */
   @Autowired
   public HorseJdbcDao(JdbcClient jdbcClient) {
     this.jdbcClient = jdbcClient;
@@ -143,7 +151,7 @@ public class HorseJdbcDao implements HorseDao {
             .param("date_of_birth", horse.dateOfBirth())
             .param("sex", horse.sex().toString())
             .param("owner_id", horse.ownerId())
-            .param("mother_id",horse.motherId())
+            .param("mother_id", horse.motherId())
             .param("father_id", horse.fatherId())
             .param("image", horse.image())
             .param("image_type", horse.imageType())

@@ -26,11 +26,17 @@ public class HorseValidator {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final HorseDao dao;
 
-    public HorseValidator(HorseDao dao) {
-        this.dao = dao;
-    }
+  /**
+   * Constructs a new {@code HorseValidator} with the specified data access dependency.
+   *
+   * @param dao the {@link HorseDao} used to access horse-related data, particularly to perform validation
+   *            checks against existing horse records in the database.
+   */
+  public HorseValidator(HorseDao dao) {
+    this.dao = dao;
+  }
 
-    /**
+  /**
    * Validates a horse before updating, ensuring all fields meet constraints and checking for conflicts.
    *
    * @param horse the {@link HorseUpdateDto} to validate
@@ -129,12 +135,12 @@ public class HorseValidator {
         if (!existing.sex().equals(horse.sex())) {
           for (Horse child : children) {
             if (child.motherId() != null && child.motherId().equals(horse.id()) && horse.sex() != Sex.FEMALE) {
-              validationErrors.add("Cannot change parent's sex to " + horse.sex() +
-                      " because horse with ID " + child.id() + " lists this horse as its mother.");
+              validationErrors.add("Cannot change parent's sex to " + horse.sex()
+                      + " because horse with ID " + child.id() + " lists this horse as its mother.");
             }
             if (child.fatherId() != null && child.fatherId().equals(horse.id()) && horse.sex() != Sex.MALE) {
-              validationErrors.add("Cannot change parent's sex to " + horse.sex() +
-                      " because horse with ID " + child.id() + " lists this horse as its father.");
+              validationErrors.add("Cannot change parent's sex to " + horse.sex()
+                      + " because horse with ID " + child.id() + " lists this horse as its father.");
             }
           }
         }
@@ -161,13 +167,13 @@ public class HorseValidator {
    * @param horse the {@link HorseCreateDto} to validate
    * @throws ValidationException if validation fails
    */
-  public void validateForCreate(HorseCreateDto horse) throws ValidationException, ConflictException {
+  public void validateForCreate(HorseCreateDto horse) throws ValidationException {
     LOG.trace("validateForCreate({})", horse);
     List<String> validationErrors = new ArrayList<>();
 
     if (horse.name() == null || horse.name().isBlank()) {
       validationErrors.add("Horse name is required");
-    }else {
+    } else {
       if (horse.name().length() > 255) {
         validationErrors.add("Horse name too long: longer than 255 characters");
       }
@@ -188,7 +194,7 @@ public class HorseValidator {
 
     if (horse.dateOfBirth() == null) {
       validationErrors.add("Horse date of birth is required");
-    }else{
+    } else {
       if (horse.dateOfBirth().isAfter(java.time.LocalDate.now())) {
         validationErrors.add("Horse date of birth cannot be in the future");
       }
@@ -203,27 +209,27 @@ public class HorseValidator {
       validationErrors.add("Invalid horse gender: must be 'MALE' or 'FEMALE'");
     }
 
-    if(horse.motherId() != null) {
-        try {
-            Horse mother = dao.getById(horse.motherId());
-            if(!mother.dateOfBirth().isBefore(horse.dateOfBirth())) {
-              validationErrors.add("Mother's date of birth should be before horse's date of birth");
-            }
-            if(mother.sex().equals(Sex.MALE)){
-              validationErrors.add("Mother should be female");
-            }
-        } catch (NotFoundException e) {
-            validationErrors.add("Mother not found");
+    if (horse.motherId() != null) {
+      try {
+        Horse mother = dao.getById(horse.motherId());
+        if (!mother.dateOfBirth().isBefore(horse.dateOfBirth())) {
+          validationErrors.add("Mother's date of birth should be before horse's date of birth");
         }
+        if (mother.sex().equals(Sex.MALE)) {
+          validationErrors.add("Mother should be female");
+        }
+      } catch (NotFoundException e) {
+        validationErrors.add("Mother not found");
+      }
     }
 
-    if(horse.fatherId() != null) {
+    if (horse.fatherId() != null) {
       try {
         Horse father = dao.getById(horse.fatherId());
-        if(!father.dateOfBirth().isBefore(horse.dateOfBirth())) {
+        if (!father.dateOfBirth().isBefore(horse.dateOfBirth())) {
           validationErrors.add("Father's date of birth should be before horse's date of birth");
         }
-        if(father.sex().equals(Sex.FEMALE)){
+        if (father.sex().equals(Sex.FEMALE)) {
           validationErrors.add("Father should be male");
         }
       } catch (NotFoundException e) {

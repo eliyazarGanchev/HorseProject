@@ -31,6 +31,13 @@ public class LogFilter extends OncePerRequestFilter {
       "/swagger.yaml"
   );
 
+  /**
+   * Constructs a new {@code LogFilter} instance.
+   * Initializes a filter used for logging HTTP requests and responses
+   * or other relevant application events.
+   */
+  public LogFilter() {
+  }
 
   @Override
   public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {

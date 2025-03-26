@@ -6,6 +6,16 @@ import java.time.LocalDate;
 /**
  * Represents a Data Transfer Object (DTO) for creating a new horse entry.
  * This record encapsulates all necessary details for registering a horse.
+ *
+ * @param name          the name of the horse.
+ * @param description   a brief description or additional information about the horse.
+ * @param dateOfBirth   the birthdate of the horse.
+ * @param sex           the biological sex of the horse.
+ * @param ownerId       the identifier of the horse's owner.
+ * @param motherId      the identifier of the horse's mother (optional, may be null).
+ * @param fatherId      the identifier of the horse's father (optional, may be null).
+ * @param image         a byte array representing the image of the horse (optional, may be null).
+ * @param imageType     the MIME type of the provided horse image (optional, e.g., "image/png").
  */
 public record HorseCreateDto(
     String name,

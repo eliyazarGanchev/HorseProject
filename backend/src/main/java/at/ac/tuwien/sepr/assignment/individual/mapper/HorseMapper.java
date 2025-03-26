@@ -28,6 +28,12 @@ public class HorseMapper {
 
   private final HorseDao horseDao;
 
+  /**
+   * Constructs a new {@code HorseMapper} with the specified data access dependency.
+   *
+   * @param horseDao the {@link HorseDao} used to access horse-related data,
+   *                 particularly for resolving entity relationships during mapping.
+   */
   public HorseMapper(HorseDao horseDao) {
     this.horseDao = horseDao;
   }
@@ -79,8 +85,8 @@ public class HorseMapper {
         horse.dateOfBirth(),
         horse.sex(),
         getOwner(horse, owners),
-        horse.motherId() == null? null: getParent(horse.motherId()),
-        horse.fatherId() == null? null: getParent(horse.fatherId()),
+        horse.motherId() == null ? null : getParent(horse.motherId()),
+        horse.fatherId() == null ? null : getParent(horse.fatherId()),
         horse.image(),
         horse.imageType()
     );

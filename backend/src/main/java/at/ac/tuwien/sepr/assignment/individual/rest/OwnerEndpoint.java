@@ -3,7 +3,6 @@ package at.ac.tuwien.sepr.assignment.individual.rest;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
-import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.FailedToCreateException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
@@ -12,7 +11,11 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -27,6 +30,11 @@ public class OwnerEndpoint {
 
   private final OwnerService service;
 
+  /**
+   * Constructs a new {@code OwnerEndpoint} instance with the specified service dependency.
+   *
+   * @param service the {@link OwnerService} used to handle business logic related to owner entities.
+   */
   public OwnerEndpoint(OwnerService service) {
     this.service = service;
   }
@@ -43,19 +51,19 @@ public class OwnerEndpoint {
     return service.search(searchParameters);
   }
 
-/**
- * Creates a new owner in the system.
- * @param toCreate the DTO containing the details for the owner to be created
- * @return the created owner, including its assigned ID and details
- * @throws FailedToCreateException if an unexpected error occurs during owner creation
- * @throws ValidationException if the provided owner data is invalid
- */
+  /**
+   * Creates a new owner in the system.
+   *
+   * @param toCreate the DTO containing the details for the owner to be created
+   * @return the created owner, including its assigned ID and details
+   * @throws FailedToCreateException if an unexpected error occurs during owner creation
+   */
   @PostMapping
   public OwnerDto create(@RequestBody OwnerCreateDto toCreate) {
     LOG.info("POST " + BASE_PATH + " query parameters: {}", toCreate);
-    try{
+    try {
       return service.create(toCreate);
-    }catch (FailedToCreateException e){
+    } catch (FailedToCreateException e) {
       HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
       logClientError(status, "Owner creation failed", e);
       throw new ResponseStatusException(status, e.getMessage(), e);

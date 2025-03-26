@@ -10,6 +10,14 @@ import java.util.List;
  * Contains a list of all conflict checks that failed when validating the piece of data in question.
  */
 public class ConflictException extends ErrorListException {
+
+  /**
+   * Constructs a new {@code ConflictException} with a general summary and a detailed list
+   * of conflict errors.
+   *
+   * @param messageSummary a brief summary of the conflict situation.
+   * @param errors         a list of specific conflict errors identified during validation.
+   */
   public ConflictException(String messageSummary, List<String> errors) {
     super("Conflicts", messageSummary, errors);
   }

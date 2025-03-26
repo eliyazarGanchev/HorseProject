@@ -9,7 +9,11 @@ import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +43,19 @@ public class OwnerJdbcDao implements OwnerDao {
           + " WHERE UPPER(first_name || ' ' || last_name) LIKE UPPER('%%' || COALESCE(:name, '') || '%%')";
 
   private static final String SQL_INSERT =
-          "INSERT INTO " + TABLE_NAME + " (first_name, last_name, description) " +
-                  "VALUES (:first_name, :last_name, :description)";
+          "INSERT INTO " + TABLE_NAME + " (first_name, last_name, description) "
+                  + "VALUES (:first_name, :last_name, :description)";
 
   private static final String SQL_SELECT_SEARCH_LIMIT_CLAUSE = " LIMIT :limit";
 
 
   private final JdbcClient jdbcClient;
 
+  /**
+   * Constructs a new {@code OwnerJdbcDao} instance with the provided {@link JdbcClient}.
+   *
+   * @param jdbcClient the JDBC client used to perform database operations related to owner entities.
+   */
   @Autowired
   public OwnerJdbcDao(JdbcClient jdbcClient) {
     this.jdbcClient = jdbcClient;

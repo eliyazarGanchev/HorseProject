@@ -66,7 +66,6 @@ public interface HorseDao {
 
   /**
    * Searches for horses in the persistent data store based on the provided criteria.
-   * <p>
    * The search criteria are encapsulated in a {@link HorseSearchDto} object, where each field is optional.
    * If a field is null, that criterion is not applied, and the search will not be restricted by it.
    * The supported search criteria are:
@@ -99,7 +98,6 @@ public interface HorseDao {
    * @param maxGenerations the maximum number of generations to include in the pedigree;
    *                       if {@code null}, the entire pedigree is returned
    * @return a list of {@link Horse} entities representing the ancestry of the specified horse
-   * @throws NotFoundException if no horse with the specified ID exists
    */
   List<Horse> getPedigree(long id, Integer maxGenerations);
 

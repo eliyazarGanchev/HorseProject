@@ -1,6 +1,12 @@
 package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
-import at.ac.tuwien.sepr.assignment.individual.dto.*;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseTreeDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -11,7 +17,10 @@ import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
 import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
 import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Map;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -30,6 +39,15 @@ public class HorseServiceImpl implements HorseService {
   private final HorseValidator validator;
   private final OwnerService ownerService;
 
+
+  /**
+   * Constructs a new {@code HorseServiceImpl} instance with required dependencies.
+   *
+   * @param dao the data access object used for horse persistence operations.
+   * @param mapper the mapper responsible for converting between entities and DTOs.
+   * @param validator the validator used for validating horse-related data.
+   * @param ownerService the service handling owner-related business logic.
+   */
 
   @Autowired
   public HorseServiceImpl(HorseDao dao,
@@ -87,7 +105,7 @@ public class HorseServiceImpl implements HorseService {
     LOG.trace("create({})", horse);
     validator.validateForCreate(horse);
     var createdHorse = dao.create(horse);
-    return mapper.entityToDetailDto(createdHorse,ownerMapForSingleId(createdHorse.ownerId()));
+    return mapper.entityToDetailDto(createdHorse, ownerMapForSingleId(createdHorse.ownerId()));
   }
 
   @Override
@@ -96,7 +114,7 @@ public class HorseServiceImpl implements HorseService {
     validator.validateForDelete(id);
     Horse horseToDeletion = dao.getById(id);
     dao.delete(id);
-    return mapper.entityToDetailDto(horseToDeletion,ownerMapForSingleId(horseToDeletion.ownerId()));
+    return mapper.entityToDetailDto(horseToDeletion, ownerMapForSingleId(horseToDeletion.ownerId()));
   }
 
   @Override

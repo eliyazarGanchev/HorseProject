@@ -14,6 +14,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class LogConfiguration {
 
   /**
+   * Constructs a new {@code LogConfiguration} instance.
+   * Used to initialize logging-related configuration for the application.
+   */
+  public LogConfiguration() {
+  }
+
+  /**
    * Registers the {@link LogFilter} to log HTTP requests.
    *
    * @return a configured {@link FilterRegistrationBean} for logging

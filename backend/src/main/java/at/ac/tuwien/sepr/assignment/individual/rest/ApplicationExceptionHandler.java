@@ -19,6 +19,13 @@ public class ApplicationExceptionHandler {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
+   * Constructs a new {@code ApplicationExceptionHandler}.
+   * Initializes a global exception handler for capturing and processing application-level exceptions.
+   */
+  public ApplicationExceptionHandler() {
+  }
+
+  /**
    * Handles {@link ValidationException} by returning a 422 Unprocessable Entity response.
    *
    * @param e the validation exception

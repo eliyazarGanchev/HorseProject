@@ -30,6 +30,13 @@ public class OwnerServiceImpl implements OwnerService {
   private final OwnerMapper mapper;
   private final OwnerValidator validator;
 
+  /**
+   * Constructs a new {@code OwnerServiceImpl} with required dependencies.
+   *
+   * @param dao the data access object responsible for owner-related database operations.
+   * @param mapper the mapper that converts between owner entities and data transfer objects.
+   * @param validator the validator used to validate owner-related input data.
+   */
   public OwnerServiceImpl(
           OwnerDao dao,
           OwnerMapper mapper, OwnerValidator validator) {

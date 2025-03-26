@@ -15,6 +15,13 @@ public class OwnerMapper {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
+   * Constructs a new {@code OwnerMapper} instance.
+   * Used for mapping between owner entities and their corresponding DTOs.
+   */
+  public OwnerMapper() {
+  }
+
+  /**
    * Converts an {@link Owner} entity to a corresponding {@link OwnerDto}.
    *
    * @param owner the {@link Owner} entity to convert

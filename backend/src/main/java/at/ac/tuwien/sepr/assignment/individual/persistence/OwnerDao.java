@@ -31,13 +31,10 @@ public interface OwnerDao {
 
   /**
    * Search for owners matching the criteria in {@code searchParameters}.
-   * 
-   * <p>
-   * A owner is considered matched, if its name contains {@code searchParameters.name} as a substring.
+   * An owner is considered matched, if its name contains {@code searchParameters.name} as a substring.
    * The returned stream of owners never contains more than {@code searchParameters.maxAmount} elements,
-   *  even if there would be more matches in the persistent data store.
-   * </p>
-   *
+   * even if there would be more matches in the persistent data store.
+
    * @param searchParameters object containing the search parameters to match
    * @return a stream containing owners matching the criteria in {@code searchParameters}
    */
@@ -45,7 +42,6 @@ public interface OwnerDao {
 
   /**
    * Creates a new owner in the persistent data store.
-   * <p>
    * The provided owner details are persisted and the newly created owner entity,
    * including its generated ID and other properties, is returned.
    *
