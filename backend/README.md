@@ -5,7 +5,7 @@
 ## **Student Information**
 - **Name:** Eliyazar Ganchev
 - **Matriculation Number:** 12026921
-- **Total Time Spent:** X hours
+- **Total Time Spent:** 50,5 hours
 
 ## **Time Log**
 | Date       | Duration (h) | Edited Story |

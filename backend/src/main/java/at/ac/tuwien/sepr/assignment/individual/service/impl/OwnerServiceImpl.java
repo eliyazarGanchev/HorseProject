@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
 
 /**
  * Service implementation for managing owner-related operations.
@@ -100,5 +99,4 @@ public class OwnerServiceImpl implements OwnerService {
     var createdOwner = dao.create(owner);
     return mapper.entityToDto(createdOwner);
   }
-
 }

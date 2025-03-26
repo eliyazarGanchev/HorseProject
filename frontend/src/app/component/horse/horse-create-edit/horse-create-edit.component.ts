@@ -104,19 +104,6 @@ export class HorseCreateEditComponent implements OnInit {
     return this.mode === HorseCreateEditDetailMode.detail;
   }
 
-
-  get sex(): string {
-    switch (this.horse.sex) {
-      case Sex.male:
-        return 'Male';
-      case Sex.female:
-        return 'Female';
-      default:
-        return '';
-    }
-  }
-
-
   private get modeActionFinished(): string {
     switch (this.mode) {
       case HorseCreateEditDetailMode.create:
@@ -127,8 +114,6 @@ export class HorseCreateEditComponent implements OnInit {
         return '?';
     }
   }
-
-
 
   ownerSuggestions = (input: string) => (input === '')
     ? of([])

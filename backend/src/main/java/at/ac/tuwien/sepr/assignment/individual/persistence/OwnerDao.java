@@ -22,7 +22,7 @@ public interface OwnerDao {
 
   /**
    * Fetch a set of owners by their IDs from the persistent data store.
-   * This is best effort, if some owner can not be found in the data store, it is simply not in the returned set.
+   * This is the best effort, if some owner can not be found in the data store, it is simply not in the returned set.
    *
    * @param ids a collection of ids, to fetch the referenced owners by.
    * @return the collection of all found owners, without those, that are not in the persistent data store

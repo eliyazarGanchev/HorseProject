@@ -6,8 +6,6 @@ import { Observable } from 'rxjs';
 import { Owner } from 'src/app/dto/owner';
 import { ErrorFormatterService } from 'src/app/service/error-formatter.service';
 import { OwnerService } from 'src/app/service/owner.service';
-import {NgIf} from "@angular/common";
-
 
 export enum OwnerCreateMode {
   create,
@@ -23,7 +21,6 @@ export enum OwnerCreateMode {
   styleUrls: ['./owner-create.component.scss']
 })
 export class OwnerCreateComponent implements OnInit {
-  ownerForDeletion: Owner | undefined;
 
   mode: OwnerCreateMode = OwnerCreateMode.create;
   owner: Owner = {

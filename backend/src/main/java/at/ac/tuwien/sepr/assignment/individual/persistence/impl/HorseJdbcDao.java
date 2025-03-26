@@ -133,6 +133,7 @@ public class HorseJdbcDao implements HorseDao {
 
   @Override
   public List<Horse> getChildrenByParentId(Long parentId) {
+    LOG.trace("getChildrenByParentId({})", parentId);
     return jdbcClient
             .sql(SQL_GET_CHILDREN_BY_PARENT)
             .param("parentId", parentId)

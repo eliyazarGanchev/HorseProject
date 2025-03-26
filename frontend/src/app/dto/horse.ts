@@ -14,11 +14,6 @@ export interface Horse {
   imageType?: string;
 }
 
-export interface HorseSearch {
-  name?: string;
-  // TODO fill in missing fields
-}
-
 export interface HorseCreate {
   name: string;
   description?: string;
