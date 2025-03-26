@@ -8,6 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
+import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
+import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
+import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
 import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.apache.el.lang.FunctionMapperFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +53,9 @@ public class HorseEndpointTest {
 
   // Field to hold the ID of the created horse for cleanup.
   private Long createdHorseId;
+
+  @Autowired
+  private HorseService horseService;
 
   /**
    * Sets up the MockMvc instance before each test.
@@ -168,7 +175,8 @@ public class HorseEndpointTest {
    * - The JSON response contains the expected horse details.
    */
   @Test
-  public void testCreateHorse_Positive_WithJessy() throws Exception {
+  public void testServiceCreateHorse_Positive_WithJessy() throws ValidationException, ConflictException {
+    // Create a valid HorseCreateDto with the name "Jessy".
     HorseCreateDto createDto = new HorseCreateDto(
             "Jessy",
             "Description for new horse",
@@ -181,24 +189,8 @@ public class HorseEndpointTest {
             null
     );
 
-    String horseJson = objectMapper.writeValueAsString(createDto);
-    MockMultipartFile horsePart = new MockMultipartFile(
-            "horse",
-            "horse.json",
-            "application/json",
-            horseJson.getBytes()
-    );
-
-    String response = mockMvc.perform(MockMvcRequestBuilders.multipart("/horses")
-                    .file(horsePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .accept(MediaType.APPLICATION_JSON))
-            .andReturn().getResponse().getContentAsString();
-
-    HorseDetailDto createdHorse = objectMapper.readValue(response, HorseDetailDto.class);
-
+    HorseDetailDto createdHorse = horseService.create(createDto);
     createdHorseId = createdHorse.id();
-
     assertAll(
             () -> assertThat(createdHorse).isNotNull(),
             () -> assertThat(createdHorse.name()).isEqualTo("Jessy"),
