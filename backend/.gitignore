@@ -38,7 +38,7 @@ build/
 .vscode/
 
 ### Ignore Log Files ###
-logs/
+log/
 *.log
 *.out
 *.err
