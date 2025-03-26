@@ -73,7 +73,7 @@ public class HorseJdbcDao implements HorseDao {
                   + "AND (COALESCE(:description, '') = '' OR UPPER(h.description) LIKE '%' || UPPER(:description) || '%') "
                   + "AND (:date_of_birth IS NULL OR h.date_of_birth <= :date_of_birth) "
                   + "AND (:sex IS NULL OR h.sex = :sex) "
-                  + "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE UPPER(:ownerName) || '%')";
+                  + "AND (COALESCE(:ownerName, '') = '' OR UPPER(o.first_name || ' ' || o.last_name) LIKE '%' || UPPER(:ownerName) || '%')";
 
   private static final String SQL_GET_PEDIGREE =
           "WITH RECURSIVE pedigree (id, name, date_of_birth, sex, mother_id, father_id, generation) AS ( "
