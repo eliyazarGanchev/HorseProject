@@ -2,6 +2,7 @@ package at.ac.tuwien.sepr.assignment.individual.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
@@ -84,10 +85,11 @@ public class HorseEndpointTest {
             .andReturn().getResponse().getContentAsString();
 
     HorseDetailDto horse = objectMapper.readValue(response, HorseDetailDto.class);
-    assertThat(horse).isNotNull();
-    assertThat(horse.id()).isEqualTo(-1L);
-    assertThat(horse.name()).containsIgnoringCase("Wendy");
-    assertThat(horse.dateOfBirth()).isNotNull();
+    assertAll(() -> assertThat(horse).isNotNull(),
+            () -> assertThat(horse.id()).isEqualTo(-1L),
+            () -> assertThat(horse.name()).containsIgnoringCase("Wendy"),
+            () -> assertThat(horse.dateOfBirth()).isNotNull());
+
   }
 
   /**
@@ -121,10 +123,11 @@ public class HorseEndpointTest {
             .andReturn().getResponse().getContentAsString();
 
     List<HorseListDto> horses = objectMapper.readValue(response, new TypeReference<List<HorseListDto>>() {});
-    assertThat(horses).isNotEmpty();
-    assertThat(horses)
+    assertAll(() ->assertThat(horses).isNotEmpty(),
+            () -> assertThat(horses)
             .extracting(HorseListDto::name)
-            .anyMatch(name -> name.toLowerCase().contains("wendy"));
+            .anyMatch(name -> name.toLowerCase().contains("wendy")));
+
   }
 
   /**

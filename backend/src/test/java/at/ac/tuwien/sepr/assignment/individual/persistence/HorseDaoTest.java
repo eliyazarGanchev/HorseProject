@@ -2,12 +2,12 @@ package at.ac.tuwien.sepr.assignment.individual.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import java.util.List;
 
-import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,8 +46,8 @@ public class HorseDaoTest {
     List<Horse> children = horseDao.getChildrenByParentId(-1L);
     assertThat(children).isNotEmpty();
     boolean found = children.stream().anyMatch(child -> {
-      Long mId = child.motherId();
-      return mId != null && mId.equals(-1L);
+      Long motherIdChecker = child.motherId();
+      return motherIdChecker != null && motherIdChecker.equals(-1L);
     });
     assertThat(found).isTrue();
   }
@@ -71,9 +71,10 @@ public class HorseDaoTest {
   @Test
   public void getPedigree_Positive() {
     List<Horse> pedigreeList = horseDao.getPedigree(-3, 2);
-    assertThat(pedigreeList).isNotEmpty();
     boolean containsBella = pedigreeList.stream().anyMatch(h -> h.name().toLowerCase().contains("bella"));
-    assertThat(containsBella).isTrue();
+    assertAll(() -> assertThat(pedigreeList).isNotEmpty(),
+            () -> assertThat(containsBella).isTrue());
+
   }
 
   /**
@@ -83,7 +84,8 @@ public class HorseDaoTest {
   @Test
   public void getPedigree_Negative_InvalidGeneration() {
     List<Horse> pedigreeList = horseDao.getPedigree(-1, -1);
-    assertThat(pedigreeList).isNotNull();
-    assertThat(pedigreeList.size()).isLessThanOrEqualTo(1);
+    assertAll(() -> assertThat(pedigreeList).isNotNull(),
+            (() -> assertThat(pedigreeList.size()).isLessThanOrEqualTo(1)));
+
   }
 }
