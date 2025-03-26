@@ -44,26 +44,12 @@ public class OwnerServiceImpl implements OwnerService {
     this.validator = validator;
   }
 
-  /**
-   * Retrieves an owner by ID.
-   *
-   * @param id the ID of the owner
-   * @return the {@link OwnerDto} representing the owner
-   * @throws NotFoundException if the owner is not found
-   */
   @Override
   public OwnerDto getById(long id) throws NotFoundException {
     LOG.trace("getById({})", id);
     return mapper.entityToDto(dao.getById(id));
   }
 
-  /**
-   * Retrieves multiple owners by their IDs.
-   *
-   * @param ids the collection of owner IDs to retrieve
-   * @return a map of owner IDs to {@link OwnerDto} objects
-   * @throws NotFoundException if any of the owners are not found
-   */
   @Override
   public Map<Long, OwnerDto> getAllById(Collection<Long> ids) throws NotFoundException {
     LOG.trace("getAllById({})", ids);
@@ -79,12 +65,6 @@ public class OwnerServiceImpl implements OwnerService {
     return owners;
   }
 
-  /**
-   * Searches for owners based on search parameters.
-   *
-   * @param searchParameters the search criteria
-   * @return a stream of matching {@link OwnerDto} objects
-   */
   @Override
   public Stream<OwnerDto> search(OwnerSearchDto searchParameters) {
     LOG.trace("search({})", searchParameters);
