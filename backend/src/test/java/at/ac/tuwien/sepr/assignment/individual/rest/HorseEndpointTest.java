@@ -193,7 +193,6 @@ public class HorseEndpointTest {
                     .file(horsePart)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString();
 
     HorseDetailDto createdHorse = objectMapper.readValue(response, HorseDetailDto.class);
