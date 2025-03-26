@@ -199,7 +199,8 @@
       <i class="bi bi-trash"></i> Delete
     </button>
 
-    <div class="ms-auto d-flex align-items-center">
+    <div class="ms-auto d-flex align-items-center"
+         *ngIf="!modeIsCreate">
       <input
         type="number"
         #maxInput

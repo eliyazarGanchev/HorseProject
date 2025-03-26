@@ -100,6 +100,11 @@ export class HorseCreateEditComponent implements OnInit {
     }
   }
 
+  get modeIsCreate(): boolean {
+    return this.mode === HorseCreateEditDetailMode.create;
+  }
+
+
   get modeIsDetail(): boolean {
     return this.mode === HorseCreateEditDetailMode.detail;
   }
