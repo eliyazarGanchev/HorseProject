@@ -3,7 +3,6 @@ package at.ac.tuwien.sepr.assignment.individual.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import java.util.List;
@@ -44,12 +43,13 @@ public class HorseDaoTest {
   public void getChildrenByParent_Positive() {
 
     List<Horse> children = horseDao.getChildrenByParentId(-1L);
-    assertThat(children).isNotEmpty();
     boolean found = children.stream().anyMatch(child -> {
       Long motherIdChecker = child.motherId();
       return motherIdChecker != null && motherIdChecker.equals(-1L);
     });
-    assertThat(found).isTrue();
+    assertAll(() -> assertThat(children).isNotEmpty(),
+            () -> assertThat(found).isTrue());
+
   }
 
   /**

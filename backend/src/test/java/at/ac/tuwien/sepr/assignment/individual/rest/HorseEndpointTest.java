@@ -123,7 +123,7 @@ public class HorseEndpointTest {
             .andReturn().getResponse().getContentAsString();
 
     List<HorseListDto> horses = objectMapper.readValue(response, new TypeReference<List<HorseListDto>>() {});
-    assertAll(() ->assertThat(horses).isNotEmpty(),
+    assertAll(() -> assertThat(horses).isNotEmpty(),
             () -> assertThat(horses)
             .extracting(HorseListDto::name)
             .anyMatch(name -> name.toLowerCase().contains("wendy")));
