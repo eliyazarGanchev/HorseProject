@@ -35,7 +35,7 @@ public class HorseServiceTest {
     List<HorseListDto> horses = horseService.allHorses()
         .toList();
 
-    assertThat(horses.size()).isGreaterThanOrEqualTo(1); // TODO: Adapt to exact number of test data entries
+    assertThat(horses.size()).isGreaterThanOrEqualTo(1);
 
     assertThat(horses)
         .map(HorseListDto::id, HorseListDto::sex)

@@ -37,7 +37,7 @@ export class HorseComponent implements OnInit {
   searchParams = {
     name: '',
     description: '',
-    date_of_birth: '',
+    dateOfBirth: '',
     sex: '',
     ownerName: ''
   };
@@ -74,7 +74,7 @@ export class HorseComponent implements OnInit {
     const query = {
       name: this.searchParams.name?.trim() || null,
       description: this.searchParams.description?.trim() || null,
-      date_of_birth: this.searchParams.date_of_birth || null,
+      dateOfBirth: this.searchParams.dateOfBirth || null,
       sex: this.searchParams.sex || null,
       ownerName: this.searchParams.ownerName?.trim() || null
     };

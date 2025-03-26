@@ -3,12 +3,11 @@
   <button type="button" class="btn btn-secondary" (click)="goBack()">Back</button>
 </div>
 
-
 <div *ngIf="!showNoGenerationsNote && horseTree">
   <h2>{{ horseTree.name }}'s Pedigree</h2>
   <ng-container
-    *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horseTree }"
-  ></ng-container>
+    *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horseTree }">
+  </ng-container>
 </div>
 
 <app-confirm-delete-dialog
@@ -35,8 +34,7 @@
         <button
           type="button"
           class="btn btn-info btn-sm ms-auto"
-          [routerLink]="['/horses/detail', horse.id]"
-        >
+          [routerLink]="['/horses/detail', horse.id]">
           Details
         </button>
         <button
@@ -47,23 +45,21 @@
           data-bs-target="#delete-dialog">
           Delete
         </button>
-
       </div>
     </div>
 
     <div
       class="node-children"
-      *ngIf="horse.expanded && (horse.mother || horse.father)"
-    >
+      *ngIf="horse.expanded && (horse.mother || horse.father)">
       <div *ngIf="horse.mother" class="child-node">
         <ng-container
-          *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horse.mother }"
-        ></ng-container>
+          *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horse.mother }">
+        </ng-container>
       </div>
       <div *ngIf="horse.father" class="child-node">
         <ng-container
-          *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horse.father }"
-        ></ng-container>
+          *ngTemplateOutlet="recursiveTemplate; context: { $implicit: horse.father }">
+        </ng-container>
       </div>
     </div>
   </div>
