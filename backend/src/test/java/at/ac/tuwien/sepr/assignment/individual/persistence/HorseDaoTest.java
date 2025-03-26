@@ -4,9 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
+
+import java.time.LocalDate;
 import java.util.List;
 
+import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
+import at.ac.tuwien.sepr.assignment.individual.type.Sex;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +27,9 @@ public class HorseDaoTest {
 
   @Autowired
   HorseDao horseDao;
+
+  // Field to hold the ID of the created horse for cleanup.
+  private Long createdHorseId;
 
   /**
    * Tests that retrieving all stored horses returns at least one entry
@@ -87,5 +96,48 @@ public class HorseDaoTest {
     assertAll(() -> assertThat(pedigreeList).isNotNull(),
             (() -> assertThat(pedigreeList.size()).isLessThanOrEqualTo(1)));
 
+  }
+
+  /**
+   * Positive test for creating a horse using HorseDao.
+   * Creates a new horse with name "Jessy" and asserts that the returned
+   * Horse object contains the expected values.
+   */
+  @Test
+  public void createHorse_Positive() throws NotFoundException {
+    HorseCreateDto createDto = new HorseCreateDto(
+            "Jessy",
+            "Description for new horse",
+            LocalDate.of(2020, 1, 1),
+            Sex.FEMALE,
+            null,
+            null,
+            null,
+            null,
+            null
+    );
+
+    Horse createdHorse = horseDao.create(createDto);
+
+    createdHorseId = createdHorse.id();
+
+    assertAll(
+            () -> assertThat(createdHorse).isNotNull(),
+            () -> assertThat(createdHorse.name()).isEqualTo("Jessy"),
+            () -> assertThat(createdHorse.description()).isEqualTo("Description for new horse"),
+            () -> assertThat(createdHorse.dateOfBirth()).isEqualTo(LocalDate.of(2020, 1, 1)),
+            () -> assertThat(createdHorse.sex()).isEqualTo(Sex.FEMALE)
+    );
+  }
+
+  /**
+   * Cleanup method to delete any created horse after each test.
+   */
+  @AfterEach
+  public void removeCreation() throws NotFoundException {
+    if (createdHorseId != null) {
+      horseDao.delete(createdHorseId);
+      createdHorseId = null;
+    }
   }
 }
